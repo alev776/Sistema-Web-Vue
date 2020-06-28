@@ -77,6 +77,9 @@
                     <label>Password</label>
                     <md-input v-model="input.password"></md-input>
                   </md-field>
+                  <vs-alert :active="!validName" color="danger" icon="new_releases" >
+                    Fields can not be empty please enter the data
+                  </vs-alert>
                 </div>
               </vs-prompt>
             </div>
@@ -138,7 +141,7 @@ export default {
       return this.$store.state.login.user.data.user.name;
     },
     validName(){
-      return (this.input.email.length > 0 && this.input.password.length > 0)
+      return (this.input.email.length > 0 && this.input.password.length > 0 && this.input.firstname !== '')
     }
   },
   methods: {

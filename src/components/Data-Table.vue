@@ -1,169 +1,109 @@
 <template>
 <div class="section">
-      <div class="main main-raised" id="section">
-        <div class="">
-          <div class="md-layout">
-            <div
-              class="md-layout-item md-size-90 md-xsmall-size-100 mx-auto"
+  <div class="main main-raised" id="section">
+    <div class="">
+      <div class="md-layout">
+        <div
+          class="md-layout-item md-size-90 md-xsmall-size-100 mx-auto"
+        >
+          <div class="section section-contacts">
+            <vs-table
+              v-model="selected"
+              @dblSelection="doubleSelection"
+              :data="array"
+              :max-items="maxItem"
+              pagination
+              search
+              noDataText="Nothing to display"
             >
-            <div class="section section-contacts">
+              <template slot="header" color="primary">
+                <h3>
+                  {{ title }}
+                </h3>
+                <vs-button color="primary" @click="btn" v-if="button" id="btn" type="flat" icon="add">Add</vs-button>
+              </template>
+              <template slot="thead">
+                <vs-th v-for="(title, id) in header" :key="id">
+                  {{ title.text }}
+                </vs-th>
+              </template>
 
-    <vs-table
-      v-model="selected"
-      @selected="handleSelected"
-      @dblSelection="doubleSelection"
-      :data="users">
-      <template slot="header" color="primary">
-        <h3>
-          Users
-        </h3>
-      </template>
-      <template slot="thead">
-        <vs-th>
-          Email
-        </vs-th>
-        <vs-th>
-          Name
-        </vs-th>
-        <vs-th>
-          Website
-        </vs-th>
-        <vs-th>
-          Nro
-        </vs-th>
-      </template>
-
-      <template slot-scope="{data}">
-        <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" >
-          <vs-td :data="data[indextr].email">
-            {{data[indextr].email}}
-          </vs-td>
-
-          <vs-td :data="data[indextr].username">
-            {{data[indextr].username}}
-          </vs-td>
-
-          <vs-td :data="data[indextr].website">
-            {{data[indextr].website}}
-          </vs-td>
-
-          <vs-td :data="data[indextr].id">
-            {{data[indextr].id}}
-          </vs-td>
-        </vs-tr>
-      </template>
-    </vs-table>
-    </div>
+              <template slot-scope="{data}">
+                <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" >
+                  <vs-td v-for="(td, index) in tr" :key="index">
+                    {{td}}
+                  </vs-td>
+                </vs-tr>
+              </template>
+            </vs-table>
           </div>
         </div>
       </div>
-      </div>
-      </div>
+    </div>
+  </div>
+</div>
 
 </template>
 
 <script>
-import { LoginCard } from "@/components";
 export default {
     props: {
         array: {
             type: Array,
             default: () => {
-                const d = []
-                return d
+                return []
             }
+        },
+        header: {
+          type: Array,
+          required: true,
+          default: () => {
+            return [];
+          }
+        },
+        maxItem: {
+          type: Number,
+          default: 5
+        },
+        title: {
+          type: String,
+          required: true,
+          default: ''
+        },
+        button: {
+          type: Boolean,
+          default: false
         }
     },
   data() {
       return {
           selected:[],
-          users:[
-            {
-              "id": 1,
-              "name": "Leanne Graham",
-              "username": "Bret",
-              "email": "Sincere@april.biz",
-              "website": "hildegard.org",
-            },
-            {
-              "id": 2,
-              "name": "Ervin Howell",
-              "username": "Antonette",
-              "email": "Shanna@melissa.tv",
-              "website": "anastasia.net",
-            },
-            {
-              "id": 3,
-              "name": "Clementine Bauch",
-              "username": "Samantha",
-              "email": "Nathan@yesenia.net",
-              "website": "ramiro.info",
-            },
-            {
-              "id": 4,
-              "name": "Patricia Lebsack",
-              "username": "Karianne",
-              "email": "Julianne.OConner@kory.org",
-              "website": "kale.biz",
-            },
-            {
-              "id": 5,
-              "name": "Chelsey Dietrich",
-              "username": "Kamren",
-              "email": "Lucio_Hettinger@annie.ca",
-              "website": "demarco.info",
-            },
-            {
-              "id": 6,
-              "name": "Mrs. Dennis Schulist",
-              "username": "Leopoldo_Corkery",
-              "email": "Karley_Dach@jasper.info",
-              "website": "ola.org",
-            },
-            {
-              "id": 7,
-              "name": "Kurtis Weissnat",
-              "username": "Elwyn.Skiles",
-              "email": "Telly.Hoeger@billy.biz",
-              "website": "elvis.io",
-            },
-            {
-              "id": 8,
-              "name": "Nicholas Runolfsdottir V",
-              "username": "Maxime_Nienow",
-              "email": "Sherwood@rosamond.me",
-              "website": "jacynthe.com",
-            },
-            {
-              "id": 9,
-              "name": "Glenna Reichert",
-              "username": "Delphine",
-              "email": "Chaim_McDermott@dana.io",
-              "website": "conrad.com",
-            },
-            {
-              "id": 10,
-              "name": "Clementina DuBuque",
-              "username": "Moriah.Stanton",
-              "email": "Rey.Padberg@karina.biz",
-              "website": "ambrose.net",
-            }
-          ]
+          // header: [
+          //   {text: 'Categoria', value: 'nombre'},
+          //   {text: 'Descripcion', value: 'descripcion'},
+          //   {text: 'Estado', value: 'estado'}
+          // ],
+          // array: [
+          //   {categoria: 'Leche', descripcion: 'Leche carnetion', estado: 'Activo', cantidad: 5},
+          //   {categoria: 'Carne', descripcion: 'to lo tipo de carne mamin', estado: 'Activo', cantidad: 74},
+          //   {categoria: 'Arroz', descripcion: 'tenemo saquete de arroz', estado: 'Activo', cantidad: 3},
+          //   {categoria: 'Pan', descripcion: 'Los mejores panes del pais', estado: 'Inactivo', cantidad: 21},
+          //   {categoria: 'Harina', descripcion: 'tenemo harina y no de la blanca', estado: 'Activo', cantidad: 15},
+          //   {categoria: 'Lacteos', descripcion: 'Tenemos to manin', estado: 'Activo', cantidad: 45},
+          //   {categoria: 'Confle', descripcion: 'Captain Crunsh el mejor', estado: 'Inactivo', cantidad: 5},
+          //   {categoria: 'Embutidos', descripcion: 'Los mejores quesos el guda', estado: 'Activo', cantidad: 8},
+
+          // ]
+          new: false
       }
   },
   methods:{
-    handleSelected(tr) {
-    //   this.$vs.notify({
-    //     title:`Selected ${tr.username}`,
-    //     text:`Email: ${tr.email}`
-    //   })
-    },
     doubleSelection(tr) {
-    //   this.$vs.notify({
-    //     title:`Double Selection ${tr.username}`,
-    //     text:`Email: ${tr.email}`,
-    //     color: 'success'
-    //   })
+      this.$emit('data', tr);
+    },
+    btn() {
+      this.new = true;
+      this.$emit('btn', this.new)
     }
   }
 }
@@ -175,5 +115,10 @@ export default {
     margin-right: 18%;
     margin-left: 18%;
     margin-bottom: -4%;
+}
+
+#btn {
+  width: 12%;
+  margin-left: 38%;
 }
 </style>

@@ -33,4 +33,8 @@ export default {
   }
 };
 </script>
-<style></style>
+<style lang="css">
+.container {
+  margin-top: 6%;
+}
+</style>

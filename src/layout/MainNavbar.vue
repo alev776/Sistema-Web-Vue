@@ -20,7 +20,7 @@
 
         </div>
         <vs-sidebar-group title="Aplication">
-          <vs-sidebar-item index="1" icon="question_answer">
+          <vs-sidebar-item index="1" icon="question_answer" to="/">
             Dashboard
           </vs-sidebar-item>
           <vs-sidebar-group title="Almacen">
