@@ -8,6 +8,8 @@ import Profile from "./views/Profile.vue";
 import MainNavbar from "./layout/MainNavbar.vue";
 import MainFooter from "./layout/MainFooter.vue";
 import Categorias from "./views/Categorias"
+import Articulos from "./views/Articulos"
+
 import store from './store'
 
 Vue.use(Router);
@@ -66,6 +68,16 @@ const routes = [
       footer: { backgroundColor: "black" }
     },
     meta: { requiresAuth: true }
+  },
+  {
+    path: "/articulos",
+    name: "articulos",
+    components: { default: Articulos, header: MainNavbar, footer: MainFooter },
+    props: {
+      header: { colorOnScroll: 400 },
+      footer: { backgroundColor: "black" }
+    },
+    meta: { requiresAuth: true }
   }
 ];
 
@@ -77,9 +89,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const protectedRoute = to.matched.some(x => x.meta.requiresAuth);
 
-  if (protectedRoute && localStorage.getItem('vuex') && !localStorage.getItem('token')) {
-    next({ name: "lock"});
-  } else if(protectedRoute && !localStorage.getItem('token') && !localStorage.getItem('vuex')) {
+   if(protectedRoute && !localStorage.getItem('token') && !localStorage.getItem('vuex')) {
     next({ name: 'login'});
   } else {
     next();

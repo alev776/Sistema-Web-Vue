@@ -15,6 +15,7 @@
     "axios": "^0.19.2",
     "core-js": "3.5.0",
     "firebase": "^7.15.0",
+    "localforage": "^1.7.4",
     "material-icons": "^0.3.1",
     "nouislider": "14.1.0",
     "v-tooltip": "2.0.2",

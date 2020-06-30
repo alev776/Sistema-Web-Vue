@@ -10,9 +10,15 @@
             <vs-table
               v-model="selected"
               @dblSelection="doubleSelection"
+              @selected="handleSelected"
               :data="array"
               :max-items="maxItem"
               pagination
+              description
+              :description-items="descriptionItems"
+              description-title="Registries"
+              description-connector="of"
+              description-body="Pages"
               search
               noDataText="Nothing to display"
             >
@@ -20,7 +26,9 @@
                 <h3>
                   {{ title }}
                 </h3>
-                <vs-button color="primary" @click="btn" v-if="button" id="btn" type="flat" icon="add">Add</vs-button>
+                <div id="btn">
+                  <vs-button color="primary" @click="btn" type="flat" icon="add">Add</vs-button>
+                </div>
               </template>
               <template slot="thead">
                 <vs-th v-for="(title, id) in header" :key="id">
@@ -33,6 +41,16 @@
                   <vs-td v-for="(td, index) in tr" :key="index">
                     {{td}}
                   </vs-td>
+                  <template class="expand-user" slot="expand">
+                    <div class="con-expand-users">
+                      <div class="con-btns-user">
+                          <div>
+                          <vs-button color="danger" @click="eliminar" type="flat" icon="delete">Delete</vs-button>
+                          <vs-button color="dark" @click="print" v-if="printDoc === true " type="flat" icon="print">DownLoad</vs-button>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
                 </vs-tr>
               </template>
             </vs-table>
@@ -73,11 +91,18 @@ export default {
         button: {
           type: Boolean,
           default: false
+        },
+        printDoc: {
+          type: Boolean,
+          default: false
         }
     },
   data() {
       return {
           selected:[],
+          descriptionItems: [3, 5, 10],
+          icon: '',
+          info: {},
           // header: [
           //   {text: 'Categoria', value: 'nombre'},
           //   {text: 'Descripcion', value: 'descripcion'},
@@ -100,10 +125,21 @@ export default {
   methods:{
     doubleSelection(tr) {
       this.$emit('data', tr);
+      this.icon = ''
+    },
+    handleSelected(tr) {
+      this.info = tr;
+      this.icon = 'selected';
     },
     btn() {
       this.new = true;
-      this.$emit('btn', this.new)
+      this.$emit('btn', this.new);
+    },
+    eliminar() {
+      this.$emit('eliminar', this.info);
+    },
+    print() {
+
     }
   }
 }
@@ -119,6 +155,24 @@ export default {
 
 #btn {
   width: 12%;
-  margin-left: 38%;
+  margin-left: 41%;
+}
+
+.con-expand-users .con-btns-user {
+	display: flex;
+	padding: 10px;
+	padding-bottom: 0px;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.con-expand-users .con-btns-user .con-userx {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.con-expand-users .list-icon i {
+	font-size: 0.9rem !important;
 }
 </style>

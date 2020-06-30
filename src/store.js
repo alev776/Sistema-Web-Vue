@@ -2,12 +2,15 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import login from './modules/login'
 import categorias from './modules/categorias'
+import articulos from './modules/articulos'
 import VuexPersistence from 'vuex-persist'
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 const vuexLocal = new VuexPersistence({
-  storage: window.localStorage
+  storage: window.localStorage,
+  key: 'vuex',
+  modules: ['login']
 });
 
 
@@ -30,7 +33,8 @@ export default new Vuex.Store({
   },
   modules: {
     login,
-    categorias
+    categorias,
+    articulos
   },
   plugins: [vuexLocal.plugin]
 })

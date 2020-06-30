@@ -186,8 +186,6 @@ export default {
       try {
         const result = await firebase.auth().signInWithPopup(provider);
         const user = result.user;
-        this.$store.state.login.img = user.photoURL;
-        console.log(user);
 
         this.postUser({
           name: user.displayName,

@@ -27,7 +27,7 @@
             <vs-sidebar-item index="2.1" icon="store" to="categorias">
               Categorias
             </vs-sidebar-item>
-            <vs-sidebar-item index="2.2" icon="nature_people">
+            <vs-sidebar-item index="2.2" icon="nature_people" to="articulos">
               Articulos
             </vs-sidebar-item>
           </vs-sidebar-group>
@@ -212,7 +212,6 @@ export default {
       signOut: 'login/signOut'
     }),
     beforeDestroy() {
-      localStorage.removeItem('vuex');
     },
     logOut() {
       location.reload();

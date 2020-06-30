@@ -298,17 +298,10 @@ export default {
     const user = this.$store.state.login.user;
       const text = `${user.data.user.name}`
       if(user) {
-        this.$vs.notify({title:'Bienvenido',text: text ,color:'primary',position:'top-center'})
+        this.$vs.notify({title:'Bienvenido', text ,color:'primary',position:'top-center'})
       }
   },
   methods: {
-    leafActive() {
-      if (window.innerWidth < 768) {
-        this.leafShow = false;
-      } else {
-        this.leafShow = true;
-      }
-    },
   },
   computed: {
     headerStyle() {
@@ -321,13 +314,6 @@ export default {
         backgroundImage: `url(${this.signup})`
       };
     }
-  },
-  mounted() {
-    this.leafActive();
-    window.addEventListener("resize", this.leafActive);
-  },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.leafActive);
   }
 };
 </script>

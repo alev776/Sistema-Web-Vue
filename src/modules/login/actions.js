@@ -37,14 +37,14 @@ export async function login ({commit}, credentials) {
     }
 }
 
-export function lock({commit}, boolean) {
-    commit('setLock', boolean);
-}
+// export function lock({commit}, boolean) {
+//     commit('setLock', boolean);
+// }
 
-export function signOut ({commit}) {
-    localStorage.clear();
-    setTimeout(() => {
-        window.localStorage.clear()
-    }, 100);
-    commit('setUser', []);
-}
+// export function signOut ({commit}) {
+//     localStorage.clear();
+//     setTimeout(() => {
+//         window.localStorage.clear()
+//     }, 100);
+//     commit('setUser', []);
+// }

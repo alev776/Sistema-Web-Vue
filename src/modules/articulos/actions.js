@@ -1,17 +1,16 @@
 import Vue from 'vue';
-import router from '../../router'
 
-export async function getCategorias({commit}, token) {
+export async function getArticulos({commit}, token) {
     try {
-        const data = await Vue.axios({
+        const { data } = await Vue.axios({
             method: 'GET',
-            url: '/categorias',
+            url: '/articulos',
             headers: {
                 'Authorization': `Bearer ${token}`
               }
         });
 
-        commit('setCategorias', data);
+        commit('setArticulos', data);
 
     } catch (error) {
         commit('setError', true);
@@ -19,11 +18,11 @@ export async function getCategorias({commit}, token) {
     }
 }
 
-export async function postCategoria({commit}, body) {
+export async function postAritculos({commit}, body) {
     try {
-        const data = await Vue.axios({
+        const { data } = await Vue.axios({
             method: 'POST',
-            url: '/categorias',
+            url: '/articulos',
             headers: {
                 'Authorization': `Bearer ${body.token}`
               },
@@ -39,17 +38,17 @@ export async function postCategoria({commit}, body) {
     }
 }
 
-export async function editCategorias({commit}, categoria) {
+export async function editArictulos({commit}, articulos) {
     try {
         const data = await Vue.axios({
             method: 'PATCH',
-            url: `/categoria/${categoria._id}`,
+            url: `/articulos/${articulos._id}`,
             headers: {
-                'Authorization': `Bearer ${categoria.token}`
+                'Authorization': `Bearer ${articulos.token}`
             },
             data: {
-                nombre: categoria.nombre,
-                descripcion: categoria.descripcion
+                nombre: articulos.nombre,
+                descripcion: articulos.descripcion
             },
         });
 
@@ -59,13 +58,13 @@ export async function editCategorias({commit}, categoria) {
     }
 }
 
-export async function deleteCategorias({commit}, categoria) {
+export async function deleteArictulos({commit}, articulos) {
     try {
         const data = await Vue.axios({
             method: 'DELETE',
-            url: `/categoria/${categoria._id}`,
+            url: `/articulos/${articulos._id}`,
             headers: {
-                'Authorization': `Bearer ${categoria.token}`
+                'Authorization': `Bearer ${articulos.token}`
             }
         });
 
