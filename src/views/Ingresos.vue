@@ -4,17 +4,33 @@
             @data="model"
             :array="newArray()"
             :header="header"
-            title="Articulos"
+            title="Ingresos"
             @btn="nuevo"
             @eliminar="eliminar"
         >
         </data-table>
-        <vs-popup class="holamundo"  title="Artículos" :active.sync="prompt">
+        <!-- <vs-popup class="holamundo"  title="Proveedor" :active.sync="prompt">
         <vs-row vs-w="12">
                 <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="6" vs-lg="5" vs-sm="5" vs-xs="5">
                     <md-field class="has-green">
-                        <label>Código</label>
-                        <md-input v-model="articulosModel.codigo"></md-input>
+                        <md-icon>person</md-icon>
+                        <label>Nombre</label>
+                        <md-input v-model="proveedoresModel.name"></md-input>
+                    </md-field>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="5" vs-lg="5" vs-sm="5" vs-xs="5">
+                    <md-field class="has-green">
+                        <md-icon>phone</md-icon>
+                        <label>Teléfono</label>
+                        <md-input v-model="proveedoresModel.telefono"></md-input>
+                    </md-field>
+                </vs-col>
+                <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="5" vs-lg="11" vs-sm="5" vs-xs="5">
+                    <md-field class="has-green">
+                        <md-icon>place</md-icon>
+                        <label>Dirección</label>
+                        <md-input v-model="proveedoresModel.direccion"></md-input>
                     </md-field>
                 </vs-col>
 
@@ -22,38 +38,27 @@
                     <vs-select
                         placeholder="Select"
                         class="selectExample"
-                        label="Categoría"
-                        v-model="articulosModel.categoria"
+                        label="Tipo Documento"
+                        v-model="proveedoresModel.tipo_documento"
                         >
-                        <vs-select-item :key="index" :value="item._id" :text="item.nombre" v-for="(item,index) in categorias" />
+                        <vs-select-item :key="index" :value="item" :text="item" v-for="(item,index) in tipo_documentos" />
                     </vs-select>
                 </vs-col>
 
-                <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="5" vs-lg="11" vs-sm="5" vs-xs="5">
+                <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="5" vs-lg="5" vs-sm="5" vs-xs="5">
                     <md-field class="has-green">
-                        <label>Nombre</label>
-                        <md-input v-model="articulosModel.nombre"></md-input>
+                        <md-icon>push_pin</md-icon>
+                        <label>Número Documento</label>
+                        <md-input v-model="proveedoresModel.num_documento"></md-input>
                     </md-field>
                 </vs-col>
 
-                <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="5" vs-lg="5" vs-sm="5" vs-xs="5">
-                    <md-field class="has-green">
-                        <label>Stock</label>
-                        <md-input v-model="articulosModel.stock"></md-input>
-                    </md-field>
-                </vs-col>
-
-                <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="5" vs-lg="5" vs-sm="5" vs-xs="5">
-                    <md-field class="has-green">
-                        <label>Precio de Venta</label>
-                        <md-input v-model="articulosModel.precio_venta"></md-input>
-                    </md-field>
-                </vs-col>
 
                 <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="5" vs-lg="11" vs-sm="5" vs-xs="5">
                     <md-field class="has-green">
-                        <label>Descripción</label>
-                        <md-input v-model="articulosModel.descripcion"></md-input>
+                        <md-icon>alternate_email</md-icon>
+                        <label>Email</label>
+                        <md-input v-model="proveedoresModel.email"></md-input>
                     </md-field>
                 </vs-col>
 
@@ -63,7 +68,7 @@
                 <vs-button color="primary" type="flat" @click="update" size="large" v-else icon="update">Update</vs-button>
                 <vs-button color="danger" type="flat" size="large" @click="prompt = false" icon="cancel">Cancel</vs-button>
             </div>
-        </vs-popup>
+        </vs-popup> -->
     </div>
 </template>
 
@@ -76,80 +81,83 @@ export default {
     data() {
         return {
             header: [
-            {text: 'Código', value: 'codigo'},
-            {text: 'Nombre', value: 'nombre'},
-            {text: 'Categoría', value: 'categoria'},
-            {text: 'Stock', value: 'stock'},
-            {text: 'Precio Venta', value: 'precio_venta'},
-            {text: 'Descripción', value: 'descripcion'},
-            {text: 'Estado', value: 'estado'}
+            {text: 'Proveedor', value: 'proveedor'},
+            {text: 'Tipo Comprobante', value: 'tipo_comprobante'},
+            {text: 'Serie Comprobante', value: 'serie_comprobante'},
+            {text: 'Número Comprobante', value: 'numero_comprobante'},
+            {text: 'Fecha', value: 'fecha'},
+            {text: 'Impuesto', value: 'impuesto'},
+            {text: 'Total', value: 'total'},
+            {text: 'Estado', value: 'estado'},
           ],
-          articulosModel: {
-              codigo: null,
-              nombre: '',
-              categoria: '',
-              stock: null,
-              precio_venta: null,
-              descripcion: '',
-              token: '',
-              _id: ''
+          ingresosModel: {
+              proveedor: '',
+              tipo_comprobante: '',
+              serie_comprobante: null,
+              numero_comprobante: '',
+              impuesto: null,
+              total: '',
+              _id: '',
+              estado: ''
           },
           art: {},
+          tipo_documentos: ['Cédula', 'Pasaporte', 'RNC'],
           index: null,
           arrayHeader: [],
           id: {},
-          prompt: false
+          prompt: false,
         }
     },
     beforeMount() {
-        this.articles();
+        this.ingresos();
     },
     computed: {
         token() {
             return window.localStorage.getItem('token');
         },
-        articulos() {
-            return this.$store.state.articulos.articulos;
+        ingreso() {
+            return this.$store.state.ingresos.ingresos;
         },
-        categorias() {
-            return this.$store.state.categorias.categorias.data;
+        proveedor() {
+            return this.$store.state.proveedores.proveedor;
         }
     },
     methods: {
         ...mapActions({
-            getArticulos: 'articulos/getArticulos',
-            getCategorias: 'categorias/getCategorias',
-            postAritculo: 'articulos/postAritculo',
-            editArticulo: 'articulos/editArticulo',
-            deleteArticulo: 'articulos/deleteArticulo'
+            getIngresos: 'ingresos/getIngresos',
+            getProveedor: 'proveedores/getProveedor',
+            postProveedor: 'proveedores/postProveedor',
+            editProveedor: 'proveedores/editProveedor',
+            deleteProveedor: 'proveedores/deleteProveedor'
         }),
         model(data) {
-            Object.assign(this.articulosModel, data);
-            const id = this.articulos.find(x => x.nombre === data.nombre && x.descripcion === data.descripcion && x.codigo === data.codigo);
-            this.articulosModel._id = id._id;
+            Object.assign(this.proveedoresModel, data);
+            const id = this.proveedor.find(x => x.email === data.email);
+            this.proveedoresModel._id = id._id;
 
-            const categoriaId = this.categorias.find(x => x.nombre === data.categoria);
-            this.articulosModel.categoria = categoriaId._id;
             this.prompt = true;
             this.index = -1;
         },
-        async articles() {
-            await this.getArticulos(this.token);
-            await this.getCategorias(this.token);
+        async ingresos() {
+            await this.getIngresos(this.token);
+            await this.getProveedor(this.token);
+
+            const date = new Date();
+            console.log(date.toISOString().substr(0, 10));
         },
         newArray() {
-            const allowedHeaders = ['codigo', 'nombre', 'categoria', 'stock', 'precio_venta', 'descripcion', 'activo'];
-            this.articulos.forEach(x => {
-                let categoria = this.categorias.find(y => y._id === x.categoria);
-                if (categoria) {
-                    x.categoria = categoria.nombre;
+            const headers = ['proveedor', 'tipo_comprobante', 'num_comprobante', 'serie_comprobante', 'fecha', 'impuesto', 'total', 'estado'];
+            this.ingreso.forEach(x => {
+                let proveedor = this.proveedor.find(y => y._id === x.proveedor);
+                if (proveedor) {
+                    x.proveedor = proveedor.name;
                 }
             });
-            return this.allowedHeaders(allowedHeaders);
+            return this.allowedHeaders(headers);
         },
         allowedHeaders(headers) {
             const arreglo = []
-            this.articulos.forEach(x => {
+            this.ingreso.forEach(x => {
                 let prueba = {};
                 headers.forEach(y => {
                     prueba[y] = x[y]
@@ -159,18 +167,13 @@ export default {
             return arreglo;
         },
         async update() {
-            const id = this.categorias.find(x => x.nombre === this.articulosModel.categoria);
-            if (id) {
-                this.articulosModel.categoria = id._id;
-            }
-            this.articulosModel.token = this.token;
+            this.proveedoresModel.token = this.token;
             this.cleanErrors();
-
-            await this.editArticulo(this.articulosModel);
-            await this.getArticulos(this.token);
+            await this.editProveedor(this.proveedoresModel);
+            await this.getProveedor(this.token);
             this.prompt = false;
 
-            if (this.$store.state.articulos.error) {
+            if (this.$store.state.proveedores.error) {
                 this.$vs.notify({
                     time: 4000,
                     position: 'top-center',
@@ -185,20 +188,18 @@ export default {
                     position: 'top-center',
                     icon: 'update',
                     color:'primary',
-                    title:'Artículo Actulizado!'
+                    title:'Proveedor Actulizado!'
                 });
             }
-
-
         },
         async post() {
-            this.articulosModel.token = this.token;
+            this.proveedoresModel.token = this.token;
             this.cleanErrors();
-            await this.postAritculo(this.articulosModel);
-            await this.getArticulos(this.token);
+            await this.postProveedor(this.proveedoresModel);
+            await this.getProveedor(this.token);
             this.prompt = false;
 
-            if (this.$store.state.articulos.error) {
+            if (this.$store.state.proveedores.error) {
                 this.$vs.notify({
                     time: 4000,
                     position: 'top-center',
@@ -213,13 +214,13 @@ export default {
                     position: 'top-center',
                     icon: 'check_box',
                     color:'success',
-                    title:'Artículo Agregado!'
+                    title:'Proveedor Agregado!'
                 });
             }
 
         },
         eliminar(el) {
-            const id = this.articulos.find(x => x.nombre === el.nombre && x.descripcion === el.descripcion && x.codigo === el.codigo);
+            const id = this.proveedor.find(x => x.email === el.email);
             this.art = id;
             this.art.token = this.token;
             this.cleanErrors();
@@ -228,19 +229,19 @@ export default {
                 type:'confirm',
                 color: 'danger',
                 title: `Confirm`,
-                text: `¿Está seguro que desea eliminar el artículo ${id.nombre}?`,
+                text: `¿Está seguro que desea eliminar el proveedor ${id.name}?`,
                 accept: this.acceptAlert
             });
 
         },
         async acceptAlert(){
-            await this.deleteArticulo(this.art);
-            await this.getArticulos(this.token);
+            await this.deleteProveedor(this.art);
+            await this.getProveedor(this.token);
 
             document.querySelector('.content-tr-expand').style.display = 'none';
             document.querySelector('.content-tr-expand').classList.remove('.content-tr-expand');
 
-            if (this.$store.state.articulos.error) {
+            if (this.$store.state.proveedores.error) {
                 this.$vs.notify({
                     time: 4000,
                     position: 'top-center',
@@ -256,7 +257,7 @@ export default {
                     icon: 'delete',
                     color:'danger',
                     title:'Eliminación Exitosa!',
-                    text: `Artículo: ${this.art.nombre}, ha sido eliminado`
+                    text: `Proveedor: ${this.art.name}, ha sido eliminado`
                 });
             }
 
@@ -264,11 +265,11 @@ export default {
         nuevo(bool) {
             this.prompt = true;
             this.index = 1
-            this.articulosModel = {}
+            this.proveedoresModel = {}
         },
         cleanErrors()  {
-            this.$store.state.articulos.error = false;
-            this.$store.state.articulos.errorMessage = '';
+            this.$store.state.proveedores.error = false;
+            this.$store.state.proveedores.errorMessage = '';
         }
     },
     components: {

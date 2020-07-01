@@ -27,7 +27,8 @@ export async function login ({commit}, credentials) {
             url: '/user/login',
             data: credentials
         });
-        localStorage.setItem('token', response.data.token);
+        window.localStorage.setItem('user', response.data.user);
+        // localStorage.setItem('user', response.data.user.data.user);
 
         commit('setUser', response);
         router.push({name: 'index'});
@@ -35,6 +36,14 @@ export async function login ({commit}, credentials) {
         commit('setError', true);
         commit('setErrors', error);
     }
+}
+
+export function signOut ({commit}) {
+    localStorage.clear();
+    setTimeout(() => {
+        window.localStorage.clear()
+    }, 100);
+    commit('setUser', []);
 }
 
 // export function lock({commit}, boolean) {

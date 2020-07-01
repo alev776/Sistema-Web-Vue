@@ -59,6 +59,7 @@ import DataTable from '../components/Data-Table'
 import { mapActions } from 'vuex';
 
 export default {
+    name: 'categorias',
     data() {
         return {
             header: [
@@ -88,10 +89,13 @@ export default {
     },
     computed: {
         token() {
-            return this.$store.state.login.user.data.token;
+            return window.localStorage.getItem('token');
         },
         categorias() {
             return this.$store.state.categorias.categorias.data;
+        },
+        articulos() {
+            return this.$store.state.articulos.articulos;
         }
     },
     methods: {
@@ -99,7 +103,8 @@ export default {
             getCategorias: 'categorias/getCategorias',
             editCategorias: 'categorias/editCategorias',
             postCategoria: 'categorias/postCategoria',
-            deleteCategorias: 'categorias/deleteCategorias'
+            deleteCategorias: 'categorias/deleteCategorias',
+            getArticulos: 'articulos/getArticulos'
         }),
         model(data) {
             Object.assign(this.editCategoria, data);
@@ -132,11 +137,55 @@ export default {
             }
             await this.editCategorias(body);
             await this.getCategorias(this.token);
+
+            if (this.$store.state.categorias.error) {
+                this.$vs.notify({
+                    time: 4000,
+                    position: 'top-center',
+                    icon: 'error',
+                    color:'danger',
+                    title:'Algo ha salido mal!',
+                    text: 'Por favor inténtelo de nuevo más tarde'
+                });
+            } else {
+                this.$vs.notify({
+                    time: 3000,
+                    position: 'top-center',
+                    color:'primary',
+                    icon: 'update',
+                    title:'Categoría Actualizada'
+                });
+            }
         },
         async post() {
             this.nuevaCategoria.token = this.token;
             await this.postCategoria(this.nuevaCategoria);
             await this.getCategorias(this.token);
+
+            if (this.$store.state.categorias.error) {
+                this.$vs.notify({
+                    time: 4000,
+                    position: 'top-center',
+                    icon: 'error',
+                    color:'danger',
+                    title:'Algo ha salido mal!',
+                    text: 'Por favor inténtelo de nuevo más tarde'
+                });
+            } else {
+                this.$vs.notify({
+                    time: 3000,
+                    position: 'top-center',
+                    color:'success',
+                    icon: 'check_box',
+                    title:'Categoría Agregada'
+                });
+            }
+        },
+        async articuloExist(id) {
+            await this.getArticulos(this.token);
+            const exist = this.articulos.some(x => x.categoria === id._id);
+
+            return exist
         },
         async eliminar(el) {
             const id = this.categorias.find(x => x.nombre === el.nombre && x.descripcion === el.descripcion);
@@ -145,15 +194,29 @@ export default {
             categoria.token = this.token;
             this.cat = categoria;
             this.cat.id = id;
+            this.cleanErrors();
 
-            this.$vs.dialog({
-                type:'confirm',
-                color: 'danger',
-                title: `Confirm`,
-                text: `¿Está seguro que desea eliminar la categoría ${id.nombre}?`,
-                accept: this.acceptAlert
+            const exist = this.articuloExist(id);
+            exist.then(el => {
+                if (el) {
+                    this.$vs.notify({
+                        time: 7500,
+                        position: 'top-center',
+                        icon: 'warning',
+                        color: 'warning',
+                        title: `¡Advertencia!`,
+                        text: `No se puede eliminar la categoría ${id.nombre} porque ya está siendo usada por uno o varios artículos.`
+                    });
+                } else {
+                    this.$vs.dialog({
+                        type:'confirm',
+                        color: 'danger',
+                        title: `Confirm`,
+                        text: `¿Está seguro que desea eliminar la categoría ${id.nombre}?`,
+                        accept: this.acceptAlert
+                    });
+                }
             });
-
         },
         async acceptAlert(){
             await this.deleteCategorias(this.cat);
@@ -162,15 +225,32 @@ export default {
             document.querySelector('.content-tr-expand').style.display = 'none';
             document.querySelector('.content-tr-expand').classList.remove('.content-tr-expand')
 
-            this.$vs.notify({
-            color:'primary',
-            title:'Categoria eliminada',
-            text: `Categoria: ${this.cat.id.nombre}, ha sido eliminada`
-            });
+            if (this.$store.state.categorias.error) {
+                this.$vs.notify({
+                    time: 4000,
+                    position: 'top-center',
+                    icon: 'error',
+                    color:'danger',
+                    title:'Algo ha salido mal!',
+                    text: 'Por favor inténtelo de nuevo más tarde'
+                });
+            } else {
+                this.$vs.notify({
+                    time: 4000,
+                    position: 'top-center',
+                    color:'danger',
+                    title:'Categoría eliminada',
+                    text: `Categoría: ${this.cat.id.nombre}, ha sido eliminada`
+                });
+            }
         },
         nuevo(bool) {
             this.prompt = bool;
             this.nuevaCategoria = {}
+        },
+        cleanErrors()  {
+            this.$store.state.categorias.error = false;
+            this.$store.state.categorias.errorMessage = '';
         }
     },
     components: {

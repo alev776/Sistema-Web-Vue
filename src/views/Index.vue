@@ -295,6 +295,9 @@ export default {
     };
   },
   beforeMount() {
+    localStorage.setItem('user', this.$store.state.login.user.data.user.name);
+    localStorage.setItem('img', this.$store.state.login.user.data.user.avatar);
+
     const user = this.$store.state.login.user;
       const text = `${user.data.user.name}`
       if(user) {

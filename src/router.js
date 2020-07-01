@@ -9,6 +9,8 @@ import MainNavbar from "./layout/MainNavbar.vue";
 import MainFooter from "./layout/MainFooter.vue";
 import Categorias from "./views/Categorias"
 import Articulos from "./views/Articulos"
+import Proveedores from "./views/Proveedores"
+import Ingresos from "./views/Ingresos"
 
 import store from './store'
 
@@ -78,7 +80,27 @@ const routes = [
       footer: { backgroundColor: "black" }
     },
     meta: { requiresAuth: true }
-  }
+  },
+  {
+    path: "/proveedores",
+    name: "proveedores",
+    components: { default: Proveedores, header: MainNavbar, footer: MainFooter },
+    props: {
+      header: { colorOnScroll: 400 },
+      footer: { backgroundColor: "black" }
+    },
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/ingresos",
+    name: "ingresos",
+    components: { default: Ingresos, header: MainNavbar, footer: MainFooter },
+    props: {
+      header: { colorOnScroll: 400 },
+      footer: { backgroundColor: "black" }
+    },
+    meta: { requiresAuth: true }
+  },
 ];
 
 const router = new Router({

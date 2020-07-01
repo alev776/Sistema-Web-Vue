@@ -32,10 +32,10 @@
             </vs-sidebar-item>
           </vs-sidebar-group>
           <vs-sidebar-group title="Compras">
-            <vs-sidebar-item index="2.1" icon="store">
+            <vs-sidebar-item index="2.1" icon="store" to="ingresos">
               Ingresos
             </vs-sidebar-item>
-            <vs-sidebar-item index="2.2" icon="nature_people">
+            <vs-sidebar-item index="2.2" icon="nature_people" to="proveedores">
               Proveedores
             </vs-sidebar-item>
           </vs-sidebar-group>
@@ -196,23 +196,17 @@ export default {
     };
   },
   computed: {
-    showDownload() {
-      const excludedRoutes = ["login", "landing", "profile"];
-      return excludedRoutes.every(r => r !== this.$route.name);
-    },
     nombre() {
-      return this.$store.state.login.user.data.user.name;
+      return localStorage.getItem('user');
     },
     img() {
-      return this.$store.state.login.user.data.user.avatar;
+      return localStorage.getItem('img');
     },
   },
   methods: {
     ...mapActions({
       signOut: 'login/signOut'
     }),
-    beforeDestroy() {
-    },
     logOut() {
       location.reload();
       this.active = false;
@@ -221,12 +215,6 @@ export default {
     lock() {
       localStorage.removeItem('token');
       }
-  },
-  mounted() {
-    document.addEventListener("scroll", this.scrollListener);
-  },
-  beforeDestroy() {
-    document.removeEventListener("scroll", this.scrollListener);
   }
 };
 </script>

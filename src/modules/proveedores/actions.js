@@ -1,16 +1,16 @@
 import Vue from 'vue';
 
-export async function getArticulos({commit}, token) {
+export async function getProveedor({commit}, token) {
     try {
         const { data } = await Vue.axios({
             method: 'GET',
-            url: '/articulos',
+            url: '/proveedores',
             headers: {
                 'Authorization': `Bearer ${token}`
               }
         });
 
-        commit('setArticulos', data);
+        commit('setProveedor', data);
 
     } catch (error) {
         commit('setError', true);
@@ -18,21 +18,21 @@ export async function getArticulos({commit}, token) {
     }
 }
 
-export async function postAritculo({commit}, body) {
+export async function postProveedor({commit}, body) {
     try {
         const { data } = await Vue.axios({
             method: 'POST',
-            url: '/articulos',
+            url: '/proveedores',
             headers: {
                 'Authorization': `Bearer ${body.token}`
               },
             data: {
-                nombre: body.nombre,
-                codigo: body.codigo,
-                stock: body.stock,
-                precio_venta: body.precio_venta,
-                descripcion: body.descripcion,
-                categoria: body.categoria
+                name: body.name,
+                tipo_documento: body.tipo_documento,
+                num_documento: body.num_documento,
+                direccion: body.direccion,
+                telefono: body.telefono,
+                email: body.email
             },
         });
 
@@ -42,21 +42,21 @@ export async function postAritculo({commit}, body) {
     }
 }
 
-export async function editArticulo({commit}, body) {
+export async function editProveedor({commit}, body) {
     try {
         const data = await Vue.axios({
             method: 'PATCH',
-            url: `/articulo/${body._id}`,
+            url: `/proveedor/${body._id}`,
             headers: {
                 'Authorization': `Bearer ${body.token}`
             },
             data: {
-                nombre: body.nombre,
-                codigo: body.codigo,
-                stock: body.stock,
-                precio_venta: body.precio_venta,
-                descripcion: body.descripcion,
-                categoria: body.categoria
+                name: body.name,
+                tipo_documento: body.tipo_documento,
+                num_documento: body.num_documento,
+                direccion: body.direccion,
+                telefono: body.telefono,
+                email: body.email
             },
         });
 
@@ -66,13 +66,13 @@ export async function editArticulo({commit}, body) {
     }
 }
 
-export async function deleteArticulo({commit}, articulo) {
+export async function deleteProveedor({commit}, proveedor) {
     try {
         const data = await Vue.axios({
             method: 'DELETE',
-            url: `/articulo/${articulo._id}`,
+            url: `/proveedor/${proveedor._id}`,
             headers: {
-                'Authorization': `Bearer ${articulo.token}`
+                'Authorization': `Bearer ${proveedor.token}`
             }
         });
 

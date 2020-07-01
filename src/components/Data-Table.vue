@@ -155,7 +155,7 @@ export default {
 
 #btn {
   width: 12%;
-  margin-left: 41%;
+  margin-left: 37%;
 }
 
 .con-expand-users .con-btns-user {

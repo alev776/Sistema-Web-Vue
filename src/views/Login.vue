@@ -195,7 +195,7 @@ export default {
         });
 
       } catch (error) {
-        console.log(error);
+
       }
     },
     acceptAlert(color){
