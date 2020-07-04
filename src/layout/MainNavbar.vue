@@ -43,7 +43,7 @@
             <vs-sidebar-item index="2.1" icon="store">
               Ventas
             </vs-sidebar-item>
-            <vs-sidebar-item index="2.2" icon="supervisor_account">
+            <vs-sidebar-item index="2.2" icon="supervisor_account" to="clientes">
               Clientes
             </vs-sidebar-item>
           </vs-sidebar-group>
@@ -62,10 +62,10 @@
           User
         </vs-divider>
 
-        <vs-sidebar-item index="5" icon="verified_user">
+        <vs-sidebar-item index="5" icon="verified_user" to="user">
           Configurations
         </vs-sidebar-item>
-        <vs-sidebar-item index="6" icon="account_box">
+        <vs-sidebar-item index="6" icon="account_box" to="user">
           Profile
         </vs-sidebar-item>
 
@@ -207,10 +207,10 @@ export default {
     ...mapActions({
       signOut: 'login/signOut'
     }),
-    logOut() {
+    async logOut() {
       location.reload();
       this.active = false;
-      this.signOut();
+      await this.signOut();
     },
     lock() {
       localStorage.removeItem('token');

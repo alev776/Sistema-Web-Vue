@@ -5,6 +5,7 @@ import categorias from './modules/categorias'
 import articulos from './modules/articulos'
 import proveedores from './modules/proveedores'
 import ingresos from './modules/ingresos'
+import clientes from './modules/clientes'
 import VuexPersistence from 'vuex-persist'
 
 Vue.use(Vuex);
@@ -37,7 +38,8 @@ export default new Vuex.Store({
     categorias,
     articulos,
     proveedores,
-    ingresos
+    ingresos,
+    clientes
   },
   plugins: [vuexLocal.plugin]
 })

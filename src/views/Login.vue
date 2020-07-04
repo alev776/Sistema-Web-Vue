@@ -40,7 +40,7 @@
               <md-field class="md-form-group" slot="inputs">
                 <md-icon>lock_outline</md-icon>
                 <label>Password...</label>
-                <md-input v-model="password"></md-input>
+                <md-input v-model="password" type="password"></md-input>
               </md-field>
 
               <p slot="b-footer" class="description">Don't have an account yet? <a href="/" @click.prevent="activePrompt2=true">Sign up</a> here</p>

@@ -103,22 +103,6 @@ export default {
           descriptionItems: [3, 5, 10],
           icon: '',
           info: {},
-          // header: [
-          //   {text: 'Categoria', value: 'nombre'},
-          //   {text: 'Descripcion', value: 'descripcion'},
-          //   {text: 'Estado', value: 'estado'}
-          // ],
-          // array: [
-          //   {categoria: 'Leche', descripcion: 'Leche carnetion', estado: 'Activo', cantidad: 5},
-          //   {categoria: 'Carne', descripcion: 'to lo tipo de carne mamin', estado: 'Activo', cantidad: 74},
-          //   {categoria: 'Arroz', descripcion: 'tenemo saquete de arroz', estado: 'Activo', cantidad: 3},
-          //   {categoria: 'Pan', descripcion: 'Los mejores panes del pais', estado: 'Inactivo', cantidad: 21},
-          //   {categoria: 'Harina', descripcion: 'tenemo harina y no de la blanca', estado: 'Activo', cantidad: 15},
-          //   {categoria: 'Lacteos', descripcion: 'Tenemos to manin', estado: 'Activo', cantidad: 45},
-          //   {categoria: 'Confle', descripcion: 'Captain Crunsh el mejor', estado: 'Inactivo', cantidad: 5},
-          //   {categoria: 'Embutidos', descripcion: 'Los mejores quesos el guda', estado: 'Activo', cantidad: 8},
-
-          // ]
           new: false
       }
   },

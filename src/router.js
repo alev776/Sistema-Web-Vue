@@ -7,10 +7,12 @@ import Login from "./views/Login.vue";
 import Profile from "./views/Profile.vue";
 import MainNavbar from "./layout/MainNavbar.vue";
 import MainFooter from "./layout/MainFooter.vue";
-import Categorias from "./views/Categorias"
-import Articulos from "./views/Articulos"
-import Proveedores from "./views/Proveedores"
-import Ingresos from "./views/Ingresos"
+import Categorias from "./views/Categorias";
+import Articulos from "./views/Articulos";
+import Proveedores from "./views/Proveedores";
+import Ingresos from "./views/Ingresos";
+import User from "./views/User";
+import Clientes from "./views/Clientes"
 
 import store from './store'
 
@@ -95,6 +97,26 @@ const routes = [
     path: "/ingresos",
     name: "ingresos",
     components: { default: Ingresos, header: MainNavbar, footer: MainFooter },
+    props: {
+      header: { colorOnScroll: 400 },
+      footer: { backgroundColor: "black" }
+    },
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/user",
+    name: "user",
+    components: { default: User, header: MainNavbar, footer: MainFooter },
+    props: {
+      header: { colorOnScroll: 400 },
+      footer: { backgroundColor: "black" }
+    },
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/clientes",
+    name: "clientes",
+    components: { default: Clientes, header: MainNavbar, footer: MainFooter },
     props: {
       header: { colorOnScroll: 400 },
       footer: { backgroundColor: "black" }
