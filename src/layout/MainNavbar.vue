@@ -62,16 +62,13 @@
           User
         </vs-divider>
 
-        <vs-sidebar-item index="5" icon="verified_user" to="user">
-          Configurations
-        </vs-sidebar-item>
         <vs-sidebar-item index="6" icon="account_box" to="user">
           Profile
         </vs-sidebar-item>
 
         <div class="footer-sidebar" slot="footer">
           <vs-button icon="reply" color="danger" type="flat" @click="logOut">log out</vs-button>
-          <vs-button icon="settings" color="primary" type="border"></vs-button>
+          <vs-button icon="settings" color="primary" type="border" to="user"></vs-button>
         </div>
 
       </vs-sidebar>

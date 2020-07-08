@@ -246,7 +246,7 @@ export default {
         nuevo(bool) {
             this.prompt = true;
             this.index = 1
-            this.articulosModel = {}
+            this.clienteModel = {}
         },
         cleanErrors()  {
             this.$store.state.clientes.error = false;

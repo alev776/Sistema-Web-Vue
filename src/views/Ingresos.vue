@@ -9,28 +9,32 @@
             @eliminar="eliminar"
         >
         </data-table>
-        <!-- <vs-popup class="holamundo"  title="Proveedor" :active.sync="prompt">
+        <vs-popup class="holamundo"  title="Ingresos" :active.sync="prompt">
         <vs-row vs-w="12">
-                <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="6" vs-lg="5" vs-sm="5" vs-xs="5">
+                <vs-col vs-type="flex" vs-offset="0.5" vs-w="5" vs-lg="12" vs-sm="6" vs-xs="5">
+                    <vs-select
+                        placeholder="Select"
+                        class="selectExample"
+                        label="Tipo Comprobante"
+                        v-model="ingresosModel.tipo_comprobante"
+                        >
+                        <vs-select-item :key="index" :value="item" :text="item" v-for="(item,index) in tipo_documentos" />
+                    </vs-select>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="5" vs-lg="5" vs-sm="6" vs-xs="5">
                     <md-field class="has-green">
-                        <md-icon>person</md-icon>
-                        <label>Nombre</label>
-                        <md-input v-model="proveedoresModel.name"></md-input>
+                        <md-icon>phone</md-icon>
+                        <label>Série Comprobante</label>
+                        <md-input v-model="ingresosModel.serie_comprobante"></md-input>
                     </md-field>
                 </vs-col>
 
-                <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="5" vs-lg="5" vs-sm="5" vs-xs="5">
-                    <md-field class="has-green">
-                        <md-icon>phone</md-icon>
-                        <label>Teléfono</label>
-                        <md-input v-model="proveedoresModel.telefono"></md-input>
-                    </md-field>
-                </vs-col>
-                <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="5" vs-lg="11" vs-sm="5" vs-xs="5">
+                <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="5" vs-lg="5" vs-sm="6" vs-xs="5">
                     <md-field class="has-green">
                         <md-icon>place</md-icon>
-                        <label>Dirección</label>
-                        <md-input v-model="proveedoresModel.direccion"></md-input>
+                        <label>Número Comprobante</label>
+                        <md-input v-model="ingresosModel.num_comprobante"></md-input>
                     </md-field>
                 </vs-col>
 
@@ -38,28 +42,44 @@
                     <vs-select
                         placeholder="Select"
                         class="selectExample"
-                        label="Tipo Documento"
-                        v-model="proveedoresModel.tipo_documento"
+                        label="Proveedor"
+                        v-model="ingresosModel.proveedor"
                         >
-                        <vs-select-item :key="index" :value="item" :text="item" v-for="(item,index) in tipo_documentos" />
+                        <vs-select-item :key="index" :value="item._id" :text="item.name" v-for="(item,index) in proveedor" />
                     </vs-select>
                 </vs-col>
 
                 <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="5" vs-lg="5" vs-sm="5" vs-xs="5">
                     <md-field class="has-green">
-                        <md-icon>push_pin</md-icon>
-                        <label>Número Documento</label>
-                        <md-input v-model="proveedoresModel.num_documento"></md-input>
+                        <label>Impuesto</label>
+                        <md-input v-model="ingresosModel.impuesto"></md-input>
                     </md-field>
                 </vs-col>
 
-
                 <vs-col vs-type="flex" vs-justify="center" vs-offset="0.5" vs-w="5" vs-lg="11" vs-sm="5" vs-xs="5">
-                    <md-field class="has-green">
-                        <md-icon>alternate_email</md-icon>
-                        <label>Email</label>
-                        <md-input v-model="proveedoresModel.email"></md-input>
-                    </md-field>
+                    <v-autocomplete
+                        v-model="model"
+                        :items="items"
+                        :loading="isLoading"
+                        :search-input.sync="search"
+                        chips
+                        clearable
+                        hide-details
+                        hide-selected
+                        item-text="name"
+                        item-value="symbol"
+                        label="Search for a coin..."
+                        solo
+                        >
+                        <template v-slot:no-data>
+                            <v-list-item>
+                            <v-list-item-title>
+                                Search for your favorite
+                                <strong>Cryptocurrency</strong>
+                            </v-list-item-title>
+                            </v-list-item>
+                        </template>
+                        </v-autocomplete>
                 </vs-col>
 
             </vs-row>
@@ -68,7 +88,120 @@
                 <vs-button color="primary" type="flat" @click="update" size="large" v-else icon="update">Update</vs-button>
                 <vs-button color="danger" type="flat" size="large" @click="prompt = false" icon="cancel">Cancel</vs-button>
             </div>
-        </vs-popup> -->
+            <div class="section">
+            <vs-table stripe :data="users">
+                <template slot="thead">
+                    <vs-th>
+                    Borrar
+                    </vs-th>
+
+                    <vs-th>
+                    Artículo
+                    </vs-th>
+                    <vs-th>
+                    Cantidad
+                    </vs-th>
+                    <vs-th>
+                    Precio
+                    </vs-th>
+                    <vs-th>
+                    Subtotal
+                    </vs-th>
+                </template>
+
+                <template slot-scope="{data}">
+                    <vs-tr :key="indextr" v-for="(tr, indextr) in data" >
+                    <vs-td>
+                        <vs-button type="flat" @click="update" size="small" icon="delete"></vs-button>
+                    </vs-td>
+
+                    <vs-td :data="tr.email">
+                        {{tr.email}}
+                    </vs-td>
+
+                    <vs-td :data="tr.username">
+                        {{tr.username}}
+
+                        <template slot="edit">
+                        <vs-input-number v-model="tr.id"/>
+                        </template>
+                    </vs-td>
+
+                    <vs-td :data="tr.id">
+                        {{tr.id}}
+
+                        <template slot="edit">
+                        <vs-input-number v-model="tr.id"/>
+                        </template>
+                    </vs-td>
+
+                    <vs-td :data="tr.id">
+                        {{tr.id}}
+                    </vs-td>
+
+                    </vs-tr>
+                </template>
+            </vs-table>
+            </div>
+            <!-- <vs-table :data="users">
+            <template slot="thead">
+                <vs-th>
+                Email
+                </vs-th>
+                <vs-th>
+                Name
+                </vs-th>
+                <vs-th>
+                Nro1
+                </vs-th>
+                <vs-th>
+                Nro2
+                </vs-th>
+            </template>
+
+            <template slot-scope="{data}">
+                <vs-tr :key="indextr" v-for="(tr, indextr) in data" >
+                <vs-td :data="tr.email">
+                    {{tr.email}}
+
+                    <template slot="edit">
+                    <vs-input v-model="tr.email" class="inputx" placeholder="Email"/>
+                    </template>
+                </vs-td>
+
+                <vs-td :data="tr.username">
+                    {{tr.username}}
+
+                    <template slot="edit">
+                    <vs-select
+                        label="Users"
+                        v-model="tr.username"
+                        >
+                        <vs-select-item :key="index" :vs-value="item.name" :vs-text="item.name" v-for="(item,index) in users" />
+                    </vs-select>
+                    </template>
+                </vs-td>
+
+                <vs-td :data="tr.id">
+                    {{tr.id}}
+
+                    <template slot="edit">
+                    <vs-input-number v-model="tr.id"/>
+                    </template>
+                </vs-td>
+
+                <vs-td :data="tr.id">
+                    {{tr.id}}
+
+                    <template slot="edit">
+                    <vs-slider :max="20" v-model="tr.id"/>
+                    </template>
+                </vs-td>
+
+                </vs-tr>
+            </template>
+            </vs-table> -->
+        </vs-popup>
     </div>
 </template>
 
@@ -94,11 +227,20 @@ export default {
               proveedor: '',
               tipo_comprobante: '',
               serie_comprobante: null,
-              numero_comprobante: '',
+              num_comprobante: '',
               impuesto: null,
               total: '',
               _id: '',
-              estado: ''
+              estado: '',
+              fecha: '',
+              codigo: '',
+              token: '',
+              detalles: {
+                  idArticulo: '',
+                  precio: '',
+                  cantidad: '',
+                  _id: ''
+              }
           },
           art: {},
           tipo_documentos: ['Cédula', 'Pasaporte', 'RNC'],
@@ -106,17 +248,71 @@ export default {
           arrayHeader: [],
           id: {},
           prompt: false,
+          isLoading: false,
+          items: [],
+          modelo: null,
+          search: null,
+          tab: null,
+          users:[
+      {
+        "id": 1,
+        "name": "Leanne Graham",
+        "username": "Bret",
+        "email": "Sincere@april.biz",
+        "website": "hildegard.org",
+      },
+      {
+        "id": 2,
+        "name": "Ervin Howell",
+        "username": "Antonette",
+        "email": "Shanna@melissa.tv",
+        "website": "anastasia.net",
+      },
+      {
+        "id": 3,
+        "name": "Clementine Bauch",
+        "username": "Samantha",
+        "email": "Nathan@yesenia.net",
+        "website": "ramiro.info",
+      }
+    ]
         }
     },
     beforeMount() {
         this.ingresos();
     },
+    watch: {
+      modelo (val) {
+        if (val != null) this.tab = 0
+        else this.tab = null
+      },
+      search (val) {
+        // Items have already been loaded
+        if (this.items.length > 0) return
+
+        this.isLoading = true
+
+        // Lazily load input items
+        fetch('https://api.coingecko.com/api/v3/coins/list')
+          .then(res => res.clone().json())
+          .then(res => {
+            this.items = res
+          })
+          .catch(err => {
+            console.log(err)
+          })
+          .finally(() => (this.isLoading = false))
+      },
+    },
     computed: {
         token() {
             return window.localStorage.getItem('token');
         },
-        ingreso() {
-            return this.$store.state.ingresos.ingresos;
+        ingresosArray() {
+            return this.$store.state.ingresos.ingresos.ingresos;
+        },
+        ingresosDetalles() {
+            return this.$store.state.ingresos.ingresos.detalles;
         },
         proveedor() {
             return this.$store.state.proveedores.proveedor;
@@ -131,9 +327,9 @@ export default {
             deleteProveedor: 'proveedores/deleteProveedor'
         }),
         model(data) {
-            Object.assign(this.proveedoresModel, data);
+            Object.assign(this.ingresosModel, data);
             const id = this.proveedor.find(x => x.email === data.email);
-            this.proveedoresModel._id = id._id;
+            this.ingresosModel._id = id._id;
 
             this.prompt = true;
             this.index = -1;
@@ -143,21 +339,22 @@ export default {
             await this.getProveedor(this.token);
 
             const date = new Date();
-            console.log(date.toISOString().substr(0, 10));
+            console.log(typeof this.ingresosArray);
         },
         newArray() {
             const headers = ['proveedor', 'tipo_comprobante', 'num_comprobante', 'serie_comprobante', 'fecha', 'impuesto', 'total', 'estado'];
-            this.ingreso.forEach(x => {
+            this.ingresosArray.forEach(x => {
                 let proveedor = this.proveedor.find(y => y._id === x.proveedor);
                 if (proveedor) {
                     x.proveedor = proveedor.name;
                 }
             });
             return this.allowedHeaders(headers);
+            console.log(this.ingreso);
         },
         allowedHeaders(headers) {
             const arreglo = []
-            this.ingreso.forEach(x => {
+            this.ingresosArray.forEach(x => {
                 let prueba = {};
                 headers.forEach(y => {
                     prueba[y] = x[y]
@@ -167,9 +364,9 @@ export default {
             return arreglo;
         },
         async update() {
-            this.proveedoresModel.token = this.token;
+            this.ingresosModel.token = this.token;
             this.cleanErrors();
-            await this.editProveedor(this.proveedoresModel);
+            await this.editProveedor(this.ingresosModel);
             await this.getProveedor(this.token);
             this.prompt = false;
 
@@ -193,9 +390,9 @@ export default {
             }
         },
         async post() {
-            this.proveedoresModel.token = this.token;
+            this.ingresosModel.token = this.token;
             this.cleanErrors();
-            await this.postProveedor(this.proveedoresModel);
+            await this.postProveedor(this.ingresosModel);
             await this.getProveedor(this.token);
             this.prompt = false;
 
@@ -265,7 +462,7 @@ export default {
         nuevo(bool) {
             this.prompt = true;
             this.index = 1
-            this.proveedoresModel = {}
+            this.ingresosModel = {}
         },
         cleanErrors()  {
             this.$store.state.proveedores.error = false;

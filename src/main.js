@@ -25,6 +25,12 @@ Vue.use(Vuesax, {
   // options here
 });
 
+import Vuetify from 'vuetify/lib'
+
+Vue.use(Vuetify, {
+
+});
+
 import Vuechart from 'vue-chartjs'
 
 Vue.use(Vuechart);
