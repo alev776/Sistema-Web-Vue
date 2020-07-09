@@ -15,7 +15,7 @@
           vs-type="flex"
           vs-offset="0.5"
           vs-w="5"
-          vs-lg="12"
+          vs-lg="6"
           vs-sm="6"
           vs-xs="5"
         >
@@ -23,7 +23,7 @@
             placeholder="Select"
             class="selectExample"
             label="Tipo Comprobante"
-            v-model="ingresosModel.tipo_comprobante"
+            v-model="tipo_comprobante"
           >
             <vs-select-item
               :key="index"
@@ -32,6 +32,22 @@
               v-for="(item, index) in tipo_documentos"
             />
           </vs-select>
+        </vs-col>
+
+        <vs-col
+          vs-type="flex"
+          vs-justify="center"
+          vs-offset="-0.5"
+          vs-w="5"
+          vs-lg="5"
+          vs-sm="6"
+          vs-xs="5"
+        >
+          <div>
+            <md-datepicker v-model="ingresosModel.fecha">
+            <label>Select date</label>
+          </md-datepicker>
+          </div>
         </vs-col>
 
         <vs-col
@@ -78,7 +94,7 @@
             placeholder="Select"
             class="selectExample"
             label="Proveedor"
-            v-model="ingresosModel.proveedor"
+            v-model="proveedorModel"
           >
             <vs-select-item
               :key="index"
@@ -100,7 +116,7 @@
         >
           <md-field class="has-green">
             <label>Impuesto</label>
-            <md-input v-model="ingresosModel.impuesto"></md-input>
+            <md-input v-model="ingresosModel.impuesto">1</md-input>
           </md-field>
         </vs-col>
 
@@ -115,7 +131,7 @@
           <vs-select
             placeholder="Select"
             class="selectExample"
-            label="Artículo"
+            label="Agregar Artículo"
             @change="articulosModel"
             v-model="articuloVal"
           >
@@ -129,7 +145,107 @@
         </vs-col>
 
       </vs-row>
-      <div class="btn">
+      <div>
+        <vs-table
+            stripe
+            :data="articulosArray"
+            v-if="articulosArray.length > 0"
+        >
+          <template slot="thead">
+            <vs-th>
+              Borrar
+            </vs-th>
+
+            <vs-th>
+              Artículo
+            </vs-th>
+            <vs-th>
+              Cantidad
+            </vs-th>
+            <vs-th>
+              Precio
+            </vs-th>
+            <vs-th>
+              Subtotal
+            </vs-th>
+          </template>
+
+          <template slot-scope="{ data }">
+            <vs-tr :key="indextr" v-for="(tr, indextr) in data">
+              <vs-td>
+                <vs-button
+                  type="flat"
+                  @click="deleteArticulo(tr)"
+                  size="small"
+                  icon="delete"
+                ></vs-button>
+              </vs-td>
+
+              <vs-td :data="tr.nombre">
+                {{ tr.nombre }}
+              </vs-td>
+
+              <vs-td :data="tr.cantidad">
+                {{tr.cantidad}}
+
+                <template slot="edit" >
+                <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.cantidad"/>
+                </template>
+            </vs-td>
+
+            <vs-td :data="tr.precio">
+                {{tr.precio}}
+
+                <template slot="edit" >
+                <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.precio"/>
+                </template>
+            </vs-td>
+
+            <vs-td :data="tr.subtotal" v-model="tr.subtotal">
+                {{tr.subtotal}}
+
+            </vs-td>
+            </vs-tr>
+          </template>
+        </vs-table>
+        <div v-if="articulosArray.length > 0">
+          <vs-row vs-w="12">
+            <vs-col
+              vs-type="flex"
+              vs-justify="center"
+              vs-offset="6.6"
+              vs-w="5"
+              vs-lg="5"
+              vs-sm="6"
+              vs-xs="5"
+            >
+              <strong>Total Parcial: {{ totalParcial }}</strong>
+            </vs-col>
+            <vs-col
+              vs-type="flex"
+              vs-justify="center"
+              vs-offset="6.5"
+              vs-w="5"
+              vs-lg="5"
+              vs-sm="6"
+              vs-xs="5"
+            >
+              <strong>Total Impuesto: {{ totalImpuestos }}</strong>
+            </vs-col>
+            <vs-col
+              vs-type="flex"
+              vs-justify="center"
+              vs-offset="6.8"
+              vs-w="5"
+              vs-lg="5"
+              vs-sm="6"
+              vs-xs="5"
+            >
+              <strong>Total Neto: {{ totalNeto }}</strong>
+            </vs-col>
+          </vs-row>
+        </div>
+        <div class="btn">
         <vs-button
           color="primary"
           type="flat"
@@ -157,68 +273,6 @@
           >Cancel</vs-button
         >
       </div>
-      <div class="section">
-        <vs-table
-            stripe
-            :data="articulosArray"
-        >
-          <template slot="thead">
-            <vs-th>
-              Borrar
-            </vs-th>
-
-            <vs-th>
-              Artículo
-            </vs-th>
-            <vs-th>
-              Cantidad
-            </vs-th>
-            <vs-th>
-              Precio
-            </vs-th>
-            <vs-th>
-              Subtotal
-            </vs-th>
-          </template>
-
-          <template slot-scope="{ data }">
-            <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
-                <vs-button
-                  type="flat"
-                  @click="update"
-                  size="small"
-                  icon="delete"
-                ></vs-button>
-              </vs-td>
-
-              <vs-td :data="tr.nombre">
-                {{ tr.nombre }}
-              </vs-td>
-
-              <vs-td :data="tr.cantidad">
-                {{tr.cantidad}}
-
-                <template slot="edit" >
-                <vs-input-number v-on:keyup.13="handle(data)" v-model="tr.cantidad"/>
-                </template>
-            </vs-td>
-
-            <vs-td :data="tr.precio">
-                {{tr.precio}}
-
-                <template slot="edit" >
-                <vs-input-number v-on:keyup.13="handle(data)" v-model="tr.precio"/>
-                </template>
-            </vs-td>
-
-            <vs-td :data="tr.subtotal" v-model="tr.subtotal">
-                {{tr.subtotal}}
-
-            </vs-td>
-            </vs-tr>
-          </template>
-        </vs-table>
       </div>
     </vs-popup>
   </div>
@@ -243,11 +297,9 @@ export default {
         { text: "Estado", value: "estado" }
       ],
       ingresosModel: {
-        proveedor: "",
-        tipo_comprobante: "",
         serie_comprobante: null,
-        num_comprobante: "",
-        impuesto: null,
+        num_comprobante: null,
+        impuesto: 1,
         total: "",
         _id: "",
         fecha: "",
@@ -261,6 +313,8 @@ export default {
           cantidad: 0,
           _id: ""
       },
+      proveedorModel: '',
+      tipo_comprobante: "",
       articuloVal: '',
       articulosArray: [],
       tipo_documentos: ["Cédula", "Pasaporte", "RNC"],
@@ -288,16 +342,63 @@ export default {
     articulos() {
       return this.$store.state.articulos.articulos;
     },
+    totalNeto() {
+      let contador = 0;
+      if (this.articulosArray.length > 0) {
+        this.articulosArray.forEach(x => {
+          contador += x.subtotal
+        });
+      }
+      const formatter  = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      });
+
+      return this.currencyFormatter(contador);
+
+    },
+    totalImpuestos() {
+      let contador = 0;
+      if (this.ingresosModel.impuesto > 0) {
+        if (this.articulosArray.length > 0) {
+        this.articulosArray.forEach(x => {
+          contador += x.subtotal
+        });
+      }
+        contador = (contador * this.ingresosModel.impuesto) / 100;
+      }
+
+      return this.currencyFormatter(contador);
+    },
+    totalParcial() {
+      let contador = 0;
+      let impuestoTotal = 0;
+        if (this.articulosArray.length > 0) {
+        this.articulosArray.forEach(x => {
+          contador += x.subtotal
+        });
+        impuestoTotal = (contador * this.ingresosModel.impuesto || 0) / 100;
+      }
+      return this.currencyFormatter(contador - impuestoTotal);
+    }
   },
   methods: {
     ...mapActions({
       getIngresos: "ingresos/getIngresos",
       getArticulos: "articulos/getArticulos",
       getProveedor: "proveedores/getProveedor",
-      postProveedor: "proveedores/postProveedor",
+      postIngresos: "ingresos/postIngresos",
       editProveedor: "proveedores/editProveedor",
       deleteProveedor: "proveedores/deleteProveedor"
     }),
+    currencyFormatter(money) {
+      const formatter  = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      });
+
+      return formatter.format(money);
+    },
     model(data) {
       Object.assign(this.ingresosModel, data);
       const id = this.proveedor.find(x => x.email === data.email);
@@ -306,11 +407,19 @@ export default {
       this.prompt = true;
       this.index = -1;
     },
-    handle(t) {
-        const index = this.articulosArray.find(x => x._id === t._id);
-        t[index].subtotal = t[index].cantidad * t[index].precio;
-        console.log(t);
-        this.articulosArray = t;
+    handle(t, r) {
+      const indexR = t.findIndex(x => x._id === r._id);
+      const index = this.articulosArray.findIndex(x => x._id === t[indexR]._id);
+      t[index].subtotal = t[index].cantidad * t[index].precio;
+      this.articulosArray = t;
+    },
+    deleteArticulo(articulo) {
+      const index = this.articulosArray.findIndex(x => x._id === articulo._id);
+      this.articulosArray.splice(index, 1);
+
+      if (!this.articulosArray.length > 0) {
+        this.articuloVal = '';
+      }
     },
     async ingresos() {
       await this.getIngresos(this.token);
@@ -318,7 +427,6 @@ export default {
       await this.getArticulos(this.token);
 
       const date = new Date();
-      console.log(typeof this.ingresosArray);
     },
     newArray() {
       const headers = [
@@ -331,32 +439,48 @@ export default {
         "total",
         "estado"
       ];
-      this.ingresosArray.forEach(x => {
-        let proveedor = this.proveedor.find(y => y._id === x.proveedor);
-        if (proveedor) {
-          x.proveedor = proveedor.name;
-        }
-      });
+      if (this.ingresosArray) {
+        this.ingresosArray.forEach(x => {
+          let proveedor = this.proveedor.find(y => y._id === x.proveedor);
+          if (proveedor) {
+            x.proveedor = proveedor.name;
+          }
+        });
+      }
       return this.allowedHeaders(headers);
-      console.log(this.ingreso);
     },
     allowedHeaders(headers) {
       const arreglo = [];
-      this.ingresosArray.forEach(x => {
-        let prueba = {};
-        headers.forEach(y => {
-          prueba[y] = x[y];
+      if (this.ingresosArray) {
+        this.ingresosArray.forEach(x => {
+          let prueba = {};
+          headers.forEach(y => {
+            prueba[y] = x[y];
+          });
+          arreglo.push(prueba);
         });
-        arreglo.push(prueba);
-      });
+      }
       return arreglo;
     },
     articulosModel() {
         const articulo =  this.articulos.find(x => x._id === this.articuloVal);
-        articulo.cantidad = 1;
-        articulo.precio = 1;
-        articulo.subtotal = articulo.cantidad * articulo.precio;
-        this.articulosArray.push(articulo);
+        if (articulo) {
+          articulo.cantidad = 1;
+          articulo.precio = 1;
+          articulo.subtotal = articulo.cantidad * articulo.precio;
+
+          const exist = this.articulosArray.some(x => x._id === articulo._id);
+          if (exist) {
+            this.$vs.dialog({
+              icon: "error",
+              color: "danger",
+              title: `Articulo ya agregado`,
+              text: `El articulo ${articulo.nombre} ya ha sido agregado`
+            });
+          } else {
+            this.articulosArray.push(articulo);
+          }
+        }
     },
     async update() {
       this.ingresosModel.token = this.token;
@@ -385,6 +509,7 @@ export default {
       }
     },
     async post() {
+      return console.log(this.ingresosModel, this.tipo_comprobante, this.proveedorModel, this.articulosArray);
       this.ingresosModel.token = this.token;
       this.cleanErrors();
       await this.postProveedor(this.ingresosModel);
@@ -457,6 +582,10 @@ export default {
       this.prompt = true;
       this.index = 1;
       this.ingresosModel = {};
+      this.articulosArray = [];
+      this.articuloVal = '';
+      this.tipo_comprobante = '',
+      this.proveedorModel = ''
     },
     cleanErrors() {
       this.$store.state.proveedores.error = false;
