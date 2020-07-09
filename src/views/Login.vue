@@ -43,46 +43,59 @@
                 <md-input v-model="password" type="password"></md-input>
               </md-field>
 
-              <p slot="b-footer" class="description">Don't have an account yet? <a href="/" @click.prevent="activePrompt2=true">Sign up</a> here</p>
+              <p slot="b-footer" class="description">
+                Don't have an account yet?
+                <a href="/" @click.prevent="activePrompt2 = true">Sign up</a>
+                here
+              </p>
 
-              <md-button slot="footer" class="md-simple md-success md-lg" @click="loginUser">
+              <md-button
+                slot="footer"
+                class="md-simple md-success md-lg"
+                @click="loginUser"
+              >
                 Get Started
               </md-button>
             </login-card>
           </div>
-            <div class="con-exemple-prompt">
-              <vs-prompt
-                color="danger"
-                title="Sign Up"
-                @cancel="valMultipe.value1='',valMultipe.value2=''"
-                @accept="loginClasic"
-                @close="close"
-                :is-valid="validName"
-                :active.sync="activePrompt2">
-                <div class="con-exemple-promptt">
-                  <!-- Name
+          <div class="con-exemple-prompt">
+            <vs-prompt
+              color="danger"
+              title="Sign Up"
+              @cancel="(valMultipe.value1 = ''), (valMultipe.value2 = '')"
+              @accept="loginClasic"
+              @close="close"
+              :is-valid="validName"
+              :active.sync="activePrompt2"
+            >
+              <div class="con-exemple-promptt">
+                <!-- Name
                   <vs-input placeholder="Name" v-model="input.firstname"/> -->
-                  <md-field class="has-green">
-                    <md-icon>person</md-icon>
-                    <label>Name</label>
-                    <md-input v-model="input.firstname"></md-input>
-                  </md-field>
-                  <md-field class="has-green">
-                    <md-icon>email</md-icon>
-                    <label>Email</label>
-                    <md-input v-model="input.email"></md-input>
-                  </md-field>
-                  <md-field class="has-green">
-                    <md-icon>lock_outline</md-icon>
-                    <label>Password</label>
-                    <md-input v-model="input.password"></md-input>
-                  </md-field>
-                  <vs-alert :active="!validName" color="danger" icon="new_releases" >
-                    Fields can not be empty please enter the data
-                  </vs-alert>
-                </div>
-              </vs-prompt>
-            </div>
+                <md-field class="has-green">
+                  <md-icon>person</md-icon>
+                  <label>Name</label>
+                  <md-input v-model="input.firstname"></md-input>
+                </md-field>
+                <md-field class="has-green">
+                  <md-icon>email</md-icon>
+                  <label>Email</label>
+                  <md-input v-model="input.email"></md-input>
+                </md-field>
+                <md-field class="has-green">
+                  <md-icon>lock_outline</md-icon>
+                  <label>Password</label>
+                  <md-input v-model="input.password"></md-input>
+                </md-field>
+                <vs-alert
+                  :active="!validName"
+                  color="danger"
+                  icon="new_releases"
+                >
+                  Fields can not be empty please enter the data
+                </vs-alert>
+              </div>
+            </vs-prompt>
+          </div>
         </div>
       </div>
     </div>
@@ -91,8 +104,8 @@
 
 <script>
 import { LoginCard } from "@/components";
-import { mapActions } from 'vuex';
-import { firebase, auth } from '../plugins/firebase'
+import { mapActions } from "vuex";
+import { firebase, auth } from "../plugins/firebase";
 
 export default {
   components: {
@@ -101,28 +114,28 @@ export default {
   bodyClass: "login-page",
   data() {
     return {
-      firstname: '',
-      email: '',
-      password: '',
+      firstname: "",
+      email: "",
+      password: "",
       input: {
-        firstname: '',
-        email: '',
-        password: ''
+        firstname: "",
+        email: "",
+        password: ""
       },
-      img: '',
-      select1:2,
-      options1:[
-        {text:'IT',value:0},
-        {text:'Blade Runner',value:2},
-        {text:'Thor Ragnarok',value:3},
+      img: "",
+      select1: 2,
+      options1: [
+        { text: "IT", value: 0 },
+        { text: "Blade Runner", value: 2 },
+        { text: "Thor Ragnarok", value: 3 }
       ],
-      activePrompt:false,
-      activePrompt2:false,
-      val:'',
-      valMultipe:{
-        value1:'',
-        value2:''
-      },
+      activePrompt: false,
+      activePrompt2: false,
+      val: "",
+      valMultipe: {
+        value1: "",
+        value2: ""
+      }
     };
   },
   props: {
@@ -140,17 +153,26 @@ export default {
     nombre() {
       return this.$store.state.login.user.data.user.name;
     },
-    validName(){
-      return (this.input.email.length > 0 && this.input.password.length > 0 && this.input.firstname !== '')
+    validName() {
+      return (
+        this.input.email.length > 0 &&
+        this.input.password.length > 0 &&
+        this.input.firstname !== ""
+      );
     }
   },
   methods: {
     ...mapActions({
-      postUser: 'login/postUser',
-      loginUsuario: 'login/login'
+      postUser: "login/postUser",
+      loginUsuario: "login/login"
     }),
-    randomCenter(){
-      this.$vs.notify({title:'Position top-center',text: this.nombre ,color:'primary',position:'top-center'})
+    randomCenter() {
+      this.$vs.notify({
+        title: "Position top-center",
+        text: this.nombre,
+        color: "primary",
+        position: "top-center"
+      });
     },
     login() {
       this.postUser({
@@ -181,7 +203,7 @@ export default {
       this.ingresar(provider);
     },
     async ingresar(provider) {
-       firebase.auth().languageCode = 'es';
+      firebase.auth().languageCode = "es";
 
       try {
         const result = await firebase.auth().signInWithPopup(provider);
@@ -190,29 +212,26 @@ export default {
         this.postUser({
           name: user.displayName,
           email: user.email,
-          password: '123456',
+          password: "123456",
           avatar: user.photoURL
         });
-
-      } catch (error) {
-
-      }
+      } catch (error) {}
     },
-    acceptAlert(color){
+    acceptAlert(color) {
       this.$vs.notify({
-        color:'success',
-        title:'Accept Selected',
-        text:'Lorem ipsum dolor sit amet, consectetur'
-      })
+        color: "success",
+        title: "Accept Selected",
+        text: "Lorem ipsum dolor sit amet, consectetur"
+      });
     },
-    close(){
+    close() {
       this.$vs.notify({
-        color:'danger',
-        title:'Closed',
-        text:'You close a dialog!'
-      })
-    },
-  },
+        color: "danger",
+        title: "Closed",
+        text: "You close a dialog!"
+      });
+    }
+  }
 };
 </script>
 
@@ -227,5 +246,4 @@ export default {
   margin-top: 5px;
   margin-bottom: 10px;
 }
-
 </style>

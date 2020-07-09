@@ -1,5 +1,5 @@
 export default {
-    categorias: [],
-    error: false,
-    errorMessage: ''
-}
+  categorias: [],
+  error: false,
+  errorMessage: ""
+};

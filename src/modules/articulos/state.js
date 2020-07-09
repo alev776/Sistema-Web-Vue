@@ -1,5 +1,5 @@
 export default {
-    articulos: [],
-    error: false,
-    errorMessage: ''
-}
+  articulos: [],
+  error: false,
+  errorMessage: ""
+};

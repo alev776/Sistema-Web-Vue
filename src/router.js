@@ -2,7 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Index from "./views/Index.vue";
 import Landing from "./views/Landing.vue";
-import Lock from "./views/Lock.vue"
+import Lock from "./views/Lock.vue";
 import Login from "./views/Login.vue";
 import Profile from "./views/Profile.vue";
 import MainNavbar from "./layout/MainNavbar.vue";
@@ -12,9 +12,9 @@ import Articulos from "./views/Articulos";
 import Proveedores from "./views/Proveedores";
 import Ingresos from "./views/Ingresos";
 import User from "./views/User";
-import Clientes from "./views/Clientes"
+import Clientes from "./views/Clientes";
 
-import store from './store'
+import store from "./store";
 
 Vue.use(Router);
 
@@ -30,9 +30,9 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/lock',
+    path: "/lock",
     name: "lock",
-    components: { default: Lock, footer: MainFooter},
+    components: { default: Lock, footer: MainFooter },
     meta: { requiresAuth: true }
   },
   {
@@ -48,7 +48,7 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    components: { default: Login, header: '', footer: MainFooter },
+    components: { default: Login, header: "", footer: MainFooter },
     props: {
       header: { colorOnScroll: 400 }
     }
@@ -86,7 +86,11 @@ const routes = [
   {
     path: "/proveedores",
     name: "proveedores",
-    components: { default: Proveedores, header: MainNavbar, footer: MainFooter },
+    components: {
+      default: Proveedores,
+      header: MainNavbar,
+      footer: MainFooter
+    },
     props: {
       header: { colorOnScroll: 400 },
       footer: { backgroundColor: "black" }
@@ -122,7 +126,7 @@ const routes = [
       footer: { backgroundColor: "black" }
     },
     meta: { requiresAuth: true }
-  },
+  }
 ];
 
 const router = new Router({
@@ -133,12 +137,15 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const protectedRoute = to.matched.some(x => x.meta.requiresAuth);
 
-   if(protectedRoute && !localStorage.getItem('token') && !localStorage.getItem('vuex')) {
-    next({ name: 'login'});
+  if (
+    protectedRoute &&
+    !localStorage.getItem("token") &&
+    !localStorage.getItem("vuex")
+  ) {
+    next({ name: "login" });
   } else {
     next();
   }
+});
 
-})
-
-export default router
+export default router;

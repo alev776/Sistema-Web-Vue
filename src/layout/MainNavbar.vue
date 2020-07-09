@@ -7,17 +7,23 @@
     :color-on-scroll="colorOnScroll"
   >
     <div id="parentx">
-
-      <vs-button @click="active=!active" color="secundary" type="filled"><span class="material-icons">view_list</span></vs-button>
-      <vs-sidebar parent="body" default-index="1"  color="primary" class="sidebarx" spacer v-model="active">
-
+      <vs-button @click="active = !active" color="secundary" type="filled"
+        ><span class="material-icons">view_list</span></vs-button
+      >
+      <vs-sidebar
+        parent="body"
+        default-index="1"
+        color="primary"
+        class="sidebarx"
+        spacer
+        v-model="active"
+      >
         <div class="header-sidebar" slot="header">
-          <vs-avatar  size="70px" :src="img" />
+          <vs-avatar size="70px" :src="img" />
 
           <h4>
             {{ nombre }}
           </h4>
-
         </div>
         <vs-sidebar-group title="Aplication">
           <vs-sidebar-item index="1" icon="question_answer" to="/">
@@ -43,7 +49,11 @@
             <vs-sidebar-item index="2.1" icon="store">
               Ventas
             </vs-sidebar-item>
-            <vs-sidebar-item index="2.2" icon="supervisor_account" to="clientes">
+            <vs-sidebar-item
+              index="2.2"
+              icon="supervisor_account"
+              to="clientes"
+            >
               Clientes
             </vs-sidebar-item>
           </vs-sidebar-group>
@@ -57,7 +67,6 @@
           </vs-sidebar-group>
         </vs-sidebar-group>
 
-
         <vs-divider icon="person" position="left">
           User
         </vs-divider>
@@ -67,10 +76,16 @@
         </vs-sidebar-item>
 
         <div class="footer-sidebar" slot="footer">
-          <vs-button icon="reply" color="danger" type="flat" @click="logOut">log out</vs-button>
-          <vs-button icon="settings" color="primary" type="border" to="user"></vs-button>
+          <vs-button icon="reply" color="danger" type="flat" @click="logOut"
+            >log out</vs-button
+          >
+          <vs-button
+            icon="settings"
+            color="primary"
+            type="border"
+            to="user"
+          ></vs-button>
         </div>
-
       </vs-sidebar>
     </div>
     <div class="md-toolbar-row md-collapse-lateral">
@@ -106,13 +121,13 @@
                         class="md-button md-button-link md-white md-simple dropdown-toggle"
                         data-toggle="dropdown"
                       >
-                        <vs-avatar :src="img"/>
+                        <vs-avatar :src="img" />
                         <p>My Account</p>
                       </md-button>
                       <ul class="dropdown-menu dropdown-with-icons">
                         <li>
                           <a href="#/landing">
-                            <vs-avatar :src="img"/>
+                            <vs-avatar :src="img" />
                             <p>Profile</p>
                           </a>
                         </li>
@@ -157,8 +172,8 @@ function resizeThrottler(actualResizeHandler) {
 }
 
 import MobileMenu from "@/layout/MobileMenu";
-import { mapActions, mapMutations } from 'vuex';
-import router from '../router';
+import { mapActions, mapMutations } from "vuex";
+import router from "../router";
 export default {
   components: {
     MobileMenu
@@ -188,21 +203,21 @@ export default {
     return {
       extraNavClasses: "",
       toggledClass: false,
-      active:false,
+      active: false,
       search: ""
     };
   },
   computed: {
     nombre() {
-      return localStorage.getItem('user');
+      return localStorage.getItem("user");
     },
     img() {
-      return localStorage.getItem('img');
-    },
+      return localStorage.getItem("img");
+    }
   },
   methods: {
     ...mapActions({
-      signOut: 'login/signOut'
+      signOut: "login/signOut"
     }),
     async logOut() {
       location.reload();
@@ -210,8 +225,8 @@ export default {
       await this.signOut();
     },
     lock() {
-      localStorage.removeItem('token');
-      }
+      localStorage.removeItem("token");
+    }
   }
 };
 </script>
@@ -223,13 +238,11 @@ export default {
   justify-content: center;
   flex-direction: column;
   width: 100%;
-
 }
 .footer-sidebar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-
 }
 </style>

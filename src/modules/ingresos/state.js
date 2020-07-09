@@ -1,5 +1,5 @@
 export default {
-    ingresos: [],
-    error: false,
-    errorMessage: ''
-}
+  ingresos: [],
+  error: false,
+  errorMessage: ""
+};

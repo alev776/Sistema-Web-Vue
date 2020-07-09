@@ -1,2 +1,2 @@
-require('./vue-axios')
-require('./firebase');
+require("./vue-axios");
+require("./firebase");

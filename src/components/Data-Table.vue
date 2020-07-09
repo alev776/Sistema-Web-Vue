@@ -1,140 +1,158 @@
 <template>
-<div class="section">
-  <div class="main main-raised" id="section">
-    <div class="">
-      <div class="md-layout">
-        <div
-          class="md-layout-item md-size-90 md-xsmall-size-100 mx-auto"
-        >
-          <div class="section section-contacts">
-            <vs-table
-              v-model="selected"
-              @dblSelection="doubleSelection"
-              @selected="handleSelected"
-              :data="array"
-              :max-items="maxItem"
-              pagination
-              description
-              :description-items="descriptionItems"
-              description-title="Registries"
-              description-connector="of"
-              description-body="Pages"
-              search
-              noDataText="Nothing to display"
-            >
-              <template slot="header" color="primary">
-                <h3>
-                  {{ title }}
-                </h3>
-                <div id="btn">
-                  <vs-button color="primary" @click="btn" type="flat" icon="add">Add</vs-button>
-                </div>
-              </template>
-              <template slot="thead">
-                <vs-th v-for="(title, id) in header" :key="id">
-                  {{ title.text }}
-                </vs-th>
-              </template>
+  <div class="section">
+    <div class="main main-raised" id="section">
+      <div class="">
+        <div class="md-layout">
+          <div class="md-layout-item md-size-90 md-xsmall-size-100 mx-auto">
+            <div class="section section-contacts">
+              <vs-table
+                v-model="selected"
+                @dblSelection="doubleSelection"
+                @selected="handleSelected"
+                :data="array"
+                :max-items="maxItem"
+                pagination
+                description
+                :description-items="descriptionItems"
+                description-title="Registries"
+                description-connector="of"
+                description-body="Pages"
+                search
+                noDataText="Nothing to display"
+              >
+                <template slot="header" color="primary">
+                  <h3>
+                    {{ title }}
+                  </h3>
+                  <div id="btn">
+                    <vs-button
+                      color="primary"
+                      @click="btn"
+                      type="flat"
+                      icon="add"
+                      >Add</vs-button
+                    >
+                  </div>
+                </template>
+                <template slot="thead">
+                  <vs-th v-for="(title, id) in header" :key="id">
+                    {{ title.text }}
+                  </vs-th>
+                </template>
 
-              <template slot-scope="{data}">
-                <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" >
-                  <vs-td v-for="(td, index) in tr" :key="index">
-                    {{td}}
-                  </vs-td>
-                  <template class="expand-user" slot="expand">
-                    <div class="con-expand-users">
-                      <div class="con-btns-user">
+                <template slot-scope="{ data }">
+                  <vs-tr
+                    :data="tr"
+                    :key="indextr"
+                    v-for="(tr, indextr) in data"
+                  >
+                    <vs-td v-for="(td, index) in tr" :key="index">
+                      {{ td }}
+                    </vs-td>
+                    <template class="expand-user" slot="expand">
+                      <div class="con-expand-users">
+                        <div class="con-btns-user">
                           <div>
-                          <vs-button color="danger" @click="eliminar" type="flat" icon="delete">Delete</vs-button>
-                          <vs-button color="dark" @click="print" v-if="printDoc === true " type="flat" icon="print">DownLoad</vs-button>
+                            <vs-button
+                              color="danger"
+                              @click="eliminar"
+                              type="flat"
+                              icon="delete"
+                              >Delete</vs-button
+                            >
+                            <vs-button
+                              color="dark"
+                              @click="print"
+                              v-if="printDoc === true"
+                              type="flat"
+                              icon="print"
+                              >DownLoad</vs-button
+                            >
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </template>
-                </vs-tr>
-              </template>
-            </vs-table>
+                    </template>
+                  </vs-tr>
+                </template>
+              </vs-table>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-
 </template>
 
 <script>
 export default {
-    props: {
-        array: {
-            type: Array,
-            default: () => {
-                return []
-            }
-        },
-        header: {
-          type: Array,
-          required: true,
-          default: () => {
-            return [];
-          }
-        },
-        maxItem: {
-          type: Number,
-          default: 5
-        },
-        title: {
-          type: String,
-          required: true,
-          default: ''
-        },
-        button: {
-          type: Boolean,
-          default: false
-        },
-        printDoc: {
-          type: Boolean,
-          default: false
-        }
-    },
-  data() {
-      return {
-          selected:[],
-          descriptionItems: [3, 5, 10],
-          icon: '',
-          info: {},
-          new: false
+  props: {
+    array: {
+      type: Array,
+      default: () => {
+        return [];
       }
+    },
+    header: {
+      type: Array,
+      required: true,
+      default: () => {
+        return [];
+      }
+    },
+    maxItem: {
+      type: Number,
+      default: 5
+    },
+    title: {
+      type: String,
+      required: true,
+      default: ""
+    },
+    button: {
+      type: Boolean,
+      default: false
+    },
+    printDoc: {
+      type: Boolean,
+      default: false
+    }
   },
-  methods:{
+  data() {
+    return {
+      selected: [],
+      descriptionItems: [3, 5, 10],
+      icon: "",
+      info: {},
+      new: false
+    };
+  },
+  methods: {
     doubleSelection(tr) {
-      this.$emit('data', tr);
-      this.icon = ''
+      this.$emit("data", tr);
+      this.icon = "";
     },
     handleSelected(tr) {
       this.info = tr;
-      this.icon = 'selected';
+      this.icon = "selected";
     },
     btn() {
       this.new = true;
-      this.$emit('btn', this.new);
+      this.$emit("btn", this.new);
     },
     eliminar() {
-      this.$emit('eliminar', this.info);
+      this.$emit("eliminar", this.info);
     },
-    print() {
-
-    }
+    print() {}
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
 #section {
-    margin-top: 4%;
-    margin-right: 18%;
-    margin-left: 18%;
-    margin-bottom: -4%;
+  margin-top: 4%;
+  margin-right: 18%;
+  margin-left: 18%;
+  margin-bottom: -4%;
 }
 
 #btn {
@@ -143,20 +161,20 @@ export default {
 }
 
 .con-expand-users .con-btns-user {
-	display: flex;
-	padding: 10px;
-	padding-bottom: 0px;
-	align-items: center;
-	justify-content: space-between;
+  display: flex;
+  padding: 10px;
+  padding-bottom: 0px;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .con-expand-users .con-btns-user .con-userx {
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .con-expand-users .list-icon i {
-	font-size: 0.9rem !important;
+  font-size: 0.9rem !important;
 }
 </style>

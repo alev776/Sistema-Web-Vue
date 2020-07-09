@@ -1,5 +1,5 @@
 export default {
-    proveedor: [],
-    error: false,
-    errorMessage: ''
-}
+  proveedor: [],
+  error: false,
+  errorMessage: ""
+};

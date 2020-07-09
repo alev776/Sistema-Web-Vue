@@ -1,9 +1,8 @@
 <template>
   <div class="wrapper">
     <parallax class="page-header header-filter" :style="headerStyle">
-
     </parallax>
-          <!-- <div class="features text-center">
+    <!-- <div class="features text-center">
             <div class="md-layout">
               <div class="md-layout-item md-medium-size-33 md-small-size-100">
                 <div class="info">
@@ -238,12 +237,8 @@
         </div>
       </div>
     </div> -->
-
   </div>
-
-
 </template>
-
 
 <script>
 export default {
@@ -274,32 +269,38 @@ export default {
       // password: null,
       leafShow: false,
       model: true,
-      data: [{
-        name: "Lorem",
-        total: 30
-      },{
-        name: "Ipsum",
-        total: 21
-      },{
-        name: "Dolor",
-        total: 20
-      }]
+      data: [
+        {
+          name: "Lorem",
+          total: 30
+        },
+        {
+          name: "Ipsum",
+          total: 21
+        },
+        {
+          name: "Dolor",
+          total: 20
+        }
+      ]
     };
   },
   beforeMount() {
-    localStorage.setItem('user', this.$store.state.login.user.data.user.name);
-    localStorage.setItem('img', this.$store.state.login.user.data.user.avatar);
+    localStorage.setItem("user", this.$store.state.login.user.data.user.name);
+    localStorage.setItem("img", this.$store.state.login.user.data.user.avatar);
 
     const user = this.$store.state.login.user;
-      const text = `${user.data.user.name}`
-      if(user) {
-        this.$vs.notify({title:'Bienvenido', text ,color:'primary',position:'top-center'})
-      }
-
+    const text = `${user.data.user.name}`;
+    if (user) {
+      this.$vs.notify({
+        title: "Bienvenido",
+        text,
+        color: "primary",
+        position: "top-center"
+      });
+    }
   },
-  methods: {
-
-  },
+  methods: {},
   computed: {
     headerStyle() {
       return {
@@ -312,9 +313,7 @@ export default {
       };
     }
   },
-  components: {
-
-  }
+  components: {}
 };
 </script>
 <style lang="scss">
@@ -329,5 +328,4 @@ export default {
     display: flex;
   }
 }
-
 </style>

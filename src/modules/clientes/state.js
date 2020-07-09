@@ -1,5 +1,5 @@
 export default {
-    cliente: [],
-    error: false,
-    errorMessage: ''
-}
+  cliente: [],
+  error: false,
+  errorMessage: ""
+};
