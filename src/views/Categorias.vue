@@ -121,13 +121,15 @@ export default {
     newArray() {
       const allowedHeaders = ["nombre", "descripcion", "estado"];
       const arreglo = [];
-      this.categorias.forEach(x => {
+      if (this.categorias.length) {
+        this.categorias.forEach(x => {
         let prueba = {};
         allowedHeaders.forEach(y => {
           prueba[y] = x[y];
         });
         arreglo.push(prueba);
       });
+      }
       return arreglo;
     },
     async edit() {

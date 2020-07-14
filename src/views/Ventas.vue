@@ -4,12 +4,12 @@
       @data="model"
       :array="newArray()"
       :header="header"
-      title="Ingresos"
+      title="Ventas"
       @btn="nuevo"
       @eliminar="eliminar"
     >
     </data-table>
-    <vs-popup class="holamundo" title="Ingresos" :active.sync="prompt">
+    <vs-popup class="holamundo" title="Ventas" :active.sync="prompt">
       <vs-row vs-w="12">
         <vs-col
           vs-type="flex"
@@ -23,7 +23,7 @@
             placeholder="Select"
             class="selectExample"
             label="Tipo Comprobante"
-            v-model="ingresosModel.tipo_comprobante"
+            v-model="ventasModel.tipo_comprobante"
           >
             <vs-select-item
               :key="index"
@@ -47,7 +47,7 @@
           <md-field class="has-green">
             <md-icon>date_range</md-icon>
             <label>Fecha</label>
-            <md-input v-model="ingresosModel.fecha"></md-input>
+            <md-input v-model="ventasModel.fecha"></md-input>
           </md-field>
 
         </vs-col>
@@ -64,7 +64,7 @@
           <md-field class="has-green">
             <md-icon>phone</md-icon>
             <label>Série Comprobante</label>
-            <md-input v-model="ingresosModel.serie_comprobante"></md-input>
+            <md-input v-model="ventasModel.serie_comprobante"></md-input>
           </md-field>
         </vs-col>
 
@@ -80,7 +80,7 @@
           <md-field class="has-green">
             <md-icon>place</md-icon>
             <label>Número Comprobante</label>
-            <md-input v-model="ingresosModel.num_comprobante"></md-input>
+            <md-input v-model="ventasModel.num_comprobante"></md-input>
           </md-field>
         </vs-col>
 
@@ -95,14 +95,14 @@
           <vs-select
             placeholder="Select"
             class="selectExample"
-            label="Proveedor"
-            v-model="ingresosModel.proveedor"
+            label="clientes"
+            v-model="ventasModel.clienteId"
           >
             <vs-select-item
               :key="index"
               :value="item._id"
               :text="item.name"
-              v-for="(item, index) in proveedor"
+              v-for="(item, index) in clientes"
             />
           </vs-select>
         </vs-col>
@@ -118,7 +118,7 @@
         >
           <md-field class="has-green">
             <label>Impuesto</label>
-            <md-input v-model="ingresosModel.impuesto">1</md-input>
+            <md-input v-model="ventasModel.impuesto">1</md-input>
           </md-field>
         </vs-col>
 
@@ -126,7 +126,7 @@
           vs-type="flex"
           vs-offset="0.5"
           vs-w="5"
-          vs-lg="12"
+          vs-lg="5"
           vs-sm="6"
           vs-xs="5"
         >
@@ -144,6 +144,21 @@
               v-for="(item, index) in articulos"
             />
           </vs-select>
+        </vs-col>
+
+        <vs-col
+          vs-type="flex"
+          vs-justify="center"
+          vs-offset="0.5"
+          vs-w="5"
+          vs-lg="5"
+          vs-sm="5"
+          vs-xs="5"
+        >
+          <md-field class="has-green">
+            <label>Descuento</label>
+            <md-input v-model="ventasModel.descuento">1</md-input>
+          </md-field>
         </vs-col>
 
       </vs-row>
@@ -244,7 +259,19 @@
               vs-sm="6"
               vs-xs="5"
             >
-              <strong>Total Impuesto: {{ totalImpuestos }}</strong>
+              <strong>Total Impuesto({{ ventasModel.impuesto }}%): {{ totalImpuestos }}</strong>
+            </vs-col>
+            <vs-col
+              v-if="ventasModel.descuento > 0"
+              vs-type="flex"
+              vs-justify="center"
+              vs-offset="6.5"
+              vs-w="5"
+              vs-lg="5"
+              vs-sm="6"
+              vs-xs="5"
+            >
+              <strong>Total Descuento({{ ventasModel.descuento }}%): {{ totalDescuento }}</strong>
             </vs-col>
             <vs-col
               vs-type="flex"
@@ -301,7 +328,7 @@ export default {
   data() {
     return {
       header: [
-        { text: "Proveedor", value: "proveedor" },
+        { text: "Cliente", value: "cliente" },
         { text: "Tipo Comprobante", value: "tipo_comprobante" },
         { text: "Serie Comprobante", value: "serie_comprobante" },
         { text: "Número Comprobante", value: "numero_comprobante" },
@@ -310,14 +337,15 @@ export default {
         { text: "Total", value: "total" },
         { text: "Estado", value: "estado" }
       ],
-      ingresosModel: {
+      ventasModel: {
         serie_comprobante: null,
         num_comprobante: null,
         impuesto: 1,
         total: "",
         _id: "",
         fecha: "",
-        proveedor: '',
+        clienteId: '',
+        descuento: 0,
         tipo_comprobante: "",
       },
       art: {},
@@ -331,20 +359,20 @@ export default {
     };
   },
   beforeMount() {
-    this.ingresos();
+    this.ventas();
   },
   computed: {
     token() {
       return window.localStorage.getItem("token");
     },
-    ingresosArray() {
-      return this.$store.state.ingresos.ingresos.ingresos;
+    ventasArray() {
+      return this.$store.state.ventas.ventas.ventas;
     },
-    ingresosDetalles() {
-      return this.$store.state.ingresos.ingresos.detalles;
+    ventasDetalles() {
+      return this.$store.state.ventas.ventas.detalles;
     },
-    proveedor() {
-      return this.$store.state.proveedores.proveedor;
+    clientes() {
+      return this.$store.state.clientes.cliente;
     },
     articulos() {
       return this.$store.state.articulos.articulos;
@@ -361,13 +389,26 @@ export default {
     },
     totalImpuestos() {
       let contador = 0;
-      if (this.ingresosModel.impuesto > 0) {
+      if (this.ventasModel.impuesto > 0) {
         if (this.articulosArray.length > 0) {
         this.articulosArray.forEach(x => {
           contador += x.subtotal
         });
       }
-        contador = (contador * this.ingresosModel.impuesto) / 100;
+        contador = (contador * this.ventasModel.impuesto) / 100;
+      }
+
+      return this.currencyFormatter(contador);
+    },
+    totalDescuento() {
+      let contador = 0;
+      if (this.ventasModel.impuesto > 0) {
+        if (this.articulosArray.length > 0) {
+        this.articulosArray.forEach(x => {
+          contador += x.subtotal
+        });
+      }
+        contador = (contador * this.ventasModel.descuento) / 100;
       }
 
       return this.currencyFormatter(contador);
@@ -379,20 +420,25 @@ export default {
         this.articulosArray.forEach(x => {
           contador += x.subtotal
         });
-        impuestoTotal = (contador * this.ingresosModel.impuesto || 0) / 100;
+        impuestoTotal = (contador * this.ventasModel.impuesto || 0) / 100;
       }
       return this.currencyFormatter(contador - impuestoTotal);
     }
   },
   methods: {
     ...mapActions({
-      getIngresos: "ingresos/getIngresos",
+      getVentas: "ventas/getVentas",
       getArticulos: "articulos/getArticulos",
-      getProveedor: "proveedores/getProveedor",
-      postIngresos: "ingresos/postIngresos",
-      editIngreso: "ingresos/editIngreso",
-      deleteIngreso: "ingresos/deleteIngreso"
+      getClientes: "clientes/getClientes",
+      postVentas: "ventas/postVentas",
+      editVenta: "ventas/editVenta",
+      deleteVenta: "ventas/deleteVenta"
     }),
+      async ventas() {
+        await this.getVentas(this.token);
+        await this.getClientes(this.token);
+        await this.getArticulos(this.token);
+      },
     currencyFormatter(money) {
       const formatter  = new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -402,16 +448,17 @@ export default {
       return formatter.format(money);
     },
     model(data) {
-      const ingresoId = this.ingresosArray.find(x => x.total === data.total && x.num_comprobante === data.num_comprobante && x.serie_comprobante === data.serie_comprobante);
-      Object.assign(this.ingresosModel, data);
-      this.ingresosDetalles.forEach(x => {
+      const venta = this.ventasArray.find(x => x.total === data.total && x.num_comprobante === data.num_comprobante && x.serie_comprobante === data.serie_comprobante);
+      Object.assign(this.ventasModel, data);
+      this.ventasModel.descuento = venta.descuento;
+      this.ventasDetalles.forEach(x => {
         const articulo = this.articulos.find(y => y._id === x.idArticulo);
         x.nombre = articulo.nombre;
         x.subtotal = x.precio * x.cantidad;
       });
-      this.id = ingresoId._id;
+      this.id = venta._id;
 
-      let det = this.ingresosDetalles.filter(x => x.idIngreso === ingresoId._id);
+      let det = this.ventasDetalles.filter(x => x.ventaId === venta._id);
       this.articulosArray = det;
 
       this.prompt = true;
@@ -431,14 +478,9 @@ export default {
         this.articuloVal = '';
       }
     },
-    async ingresos() {
-      await this.getIngresos(this.token);
-      await this.getProveedor(this.token);
-      await this.getArticulos(this.token);
-    },
     newArray() {
       const headers = [
-        "proveedor",
+        "clienteId",
         "tipo_comprobante",
         "num_comprobante",
         "serie_comprobante",
@@ -447,11 +489,11 @@ export default {
         "total",
         "estado"
       ];
-      if (this.ingresosArray) {
-        this.ingresosArray.forEach(x => {
-          let proveedor = this.proveedor.find(y => y._id === x.proveedor);
-          if (proveedor) {
-            x.proveedor = proveedor.name;
+      if (this.ventasArray) {
+        this.ventasArray.forEach(x => {
+          let clientes = this.clientes.find(y => y._id === x.clienteId);
+          if (clientes) {
+            x.clienteId = clientes.name;
             x.fecha = new Date(x.fecha).toISOString().substr(0, 10);
           }
         });
@@ -460,8 +502,8 @@ export default {
     },
     allowedHeaders(headers) {
       const arreglo = [];
-      if (this.ingresosArray) {
-        this.ingresosArray.forEach(x => {
+      if (this.ventasArray) {
+        this.ventasArray.forEach(x => {
           let prueba = {};
           headers.forEach(y => {
             prueba[y] = x[y];
@@ -492,29 +534,29 @@ export default {
         }
     },
     async update() {
-      this.ingresosModel.token = this.token;
-      this.ingresosModel._id = this.id
-      const proveedor = this.proveedor.find(x => x._id === this.ingresosModel.proveedor);
-      if (proveedor) {
-        this.ingresosModel.proveedor = proveedor._id;
+      this.ventasModel.token = this.token;
+      this.ventasModel._id = this.id;
+      const cliente = this.clientes.find(x => x.name === this.ventasModel.clienteId);
+      if (cliente) {
+        this.ventasModel.clienteId = cliente._id;
       }else {
-        const proveedorName = this.proveedor.find(x => x.name === this.ingresosModel.proveedor);
-          this.ingresosModel.proveedor = proveedorName._id;
+        const clienteName = this.clientes.find(x => x._id === this.ventasModel.clienteId);
+          this.ventasModel.clienteId = clienteName._id;
       }
 
       let contador = 0;
       this.articulosArray.forEach(x => {
         contador += x.subtotal;
       });
-      this.ingresosModel.total = contador;
+      this.ventasModel.total = contador;
       this.articuloVal = '';
       this.cleanErrors();
-      this.ingresosModel.detalles = this.articulosArray;
-      await this.editIngreso(this.ingresosModel);
-      await this.getIngresos(this.token);
+      this.ventasModel.detalles = this.articulosArray;
+      await this.editVenta(this.ventasModel);
+      await this.getVentas(this.token);
       this.prompt = false;
 
-      if (this.$store.state.ingresos.error) {
+      if (this.$store.state.ventas.error) {
         this.$vs.notify({
           time: 4000,
           position: "top-center",
@@ -529,25 +571,26 @@ export default {
           position: "top-center",
           icon: "update",
           color: "primary",
-          title: "Ingreso Actulizado!"
+          title: "Venta Actulizada!"
         });
       }
     },
     async post() {
-      this.ingresosModel.token = this.token;
+      this.ventasModel.token = this.token;
       let contador = 0;
       this.articulosArray.forEach(x => {
         x.precio = parseInt(x.precio);
         x.cantidad = parseInt(x.cantidad);
+        x.descuento = parseInt(x.descuento);
         contador += x.subtotal;
       });
 
-      this.ingresosModel.impuesto = parseInt(this.ingresosModel.impuesto);
-      this.ingresosModel.detalles = this.articulosArray;
-      this.ingresosModel.total = contador;
+      this.ventasModel.impuesto = parseInt(this.ventasModel.impuesto);
+      this.ventasModel.detalles = this.articulosArray;
+      this.ventasModel.total = contador;
       this.cleanErrors();
-      await this.postIngresos(this.ingresosModel);
-      await this.getIngresos(this.token);
+      await this.postVentas(this.ventasModel);
+      await this.getVentas(this.token);
       this.prompt = false;
 
       if (this.$store.state.ingresos.error) {
@@ -570,29 +613,29 @@ export default {
       }
     },
     eliminar(el) {
-      const ingresoId = this.ingresosArray.find(x => x.total === el.total && x.num_comprobante === el.num_comprobante && x.serie_comprobante === el.serie_comprobante);
-      ingresoId.token = this.token;
-      this.art = ingresoId;
+      const venta = this.ventasArray.find(x => x.total === el.total && x.num_comprobante === el.num_comprobante && x.serie_comprobante === el.serie_comprobante);
+      venta.token = this.token;
+      this.art = venta;
       this.cleanErrors();
 
       this.$vs.dialog({
         type: "confirm",
         color: "danger",
         title: `Confirm`,
-        text: `¿Está seguro que desea eliminar el ingreso con el número de comprobante ${ingresoId.num_comprobante}?`,
+        text: `¿Está seguro que desea eliminar La venta con el número de comprobante ${venta.num_comprobante}?`,
         accept: this.acceptAlert
       });
     },
     async acceptAlert() {
-      await this.deleteIngreso(this.art);
-      await this.getIngresos(this.token);
+      await this.deleteVenta(this.art);
+      await this.getVentas(this.token);
 
       document.querySelector(".content-tr-expand").style.display = "none";
       document
         .querySelector(".content-tr-expand")
         .classList.remove(".content-tr-expand");
 
-      if (this.$store.state.ingresos.error) {
+      if (this.$store.state.ventas.error) {
         this.$vs.notify({
           time: 4000,
           position: "top-center",
@@ -608,22 +651,22 @@ export default {
           icon: "delete",
           color: "danger",
           title: "Eliminación Exitosa!",
-          text: `Ingreso eliminado`
+          text: `Venta eliminado`
         });
       }
     },
     nuevo(bool) {
       this.prompt = true;
       this.index = 1;
-      this.ingresosModel = {};
+      this.ventasModel = {};
       this.articulosArray = [];
       this.articuloVal = '';
-      this.ingresosModel.tipo_comprobante = '',
-      this.ingresosModel.proveedor = ''
+      this.ventasModel.tipo_comprobante = '',
+      this.ventasModel.clienteId = ''
     },
     cleanErrors() {
-      this.$store.state.ingresos.error = false;
-      this.$store.state.ingresos.errorMessage = "";
+      this.$store.state.ventas.error = false;
+      this.$store.state.ventas.errorMessage = "";
     }
   },
   components: {

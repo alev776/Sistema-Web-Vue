@@ -13,6 +13,7 @@ import Proveedores from "./views/Proveedores";
 import Ingresos from "./views/Ingresos";
 import User from "./views/User";
 import Clientes from "./views/Clientes";
+import Ventas from "./views/Ventas";
 
 import store from "./store";
 
@@ -121,6 +122,16 @@ const routes = [
     path: "/clientes",
     name: "clientes",
     components: { default: Clientes, header: MainNavbar, footer: MainFooter },
+    props: {
+      header: { colorOnScroll: 400 },
+      footer: { backgroundColor: "black" }
+    },
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/ventas",
+    name: "ventas",
+    components: { default: Ventas, header: MainNavbar, footer: MainFooter },
     props: {
       header: { colorOnScroll: 400 },
       footer: { backgroundColor: "black" }

@@ -46,7 +46,7 @@
             </vs-sidebar-item>
           </vs-sidebar-group>
           <vs-sidebar-group title="Ventas">
-            <vs-sidebar-item index="2.1" icon="store">
+            <vs-sidebar-item index="2.1" icon="store" to="ventas">
               Ventas
             </vs-sidebar-item>
             <vs-sidebar-item

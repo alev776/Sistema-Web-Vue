@@ -1,87 +1,89 @@
 import Vue from "vue";
 
-export async function getIngresos({ commit }, token) {
+export async function getVentas({ commit }, token) {
   try {
     const { data } = await Vue.axios({
       method: "GET",
-      url: "/ingresos",
+      url: "/ventas",
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
 
-    commit("setIngresos", data);
+    commit("setVentas", data);
   } catch (error) {
     commit("setError", true);
     commit("setErrors", error);
   }
 }
 
-export async function postIngresos({ commit }, body) {
+export async function postVentas({ commit }, body) {
   try {
     const { data } = await Vue.axios({
       method: "POST",
-      url: "/ingresos",
+      url: "/ventas",
       headers: {
         Authorization: `Bearer ${body.token}`
       },
       data: {
-        proveedor: body.proveedor,
+        clienteId: body.clienteId,
         tipo_comprobante: body.tipo_comprobante,
         num_comprobante: body.num_comprobante,
         serie_comprobante: body.serie_comprobante,
         fecha: body.fecha,
         impuesto: body.impuesto,
+        descuento: body.descuento,
         total: body.total,
         detalles: body.detalles
       }
     });
 
-    commit("setIngresos", data);
+    commit("setVentas", data);
   } catch (error) {
     commit("setError", true);
     commit("setErrors", error);
   }
 }
 
-export async function editIngreso({ commit }, body) {
+export async function editVenta({ commit }, body) {
   try {
     const { data } = await Vue.axios({
       method: "PATCH",
-      url: `/ingreso/${body._id}`,
+      url: `/venta/${body._id}`,
       headers: {
         Authorization: `Bearer ${body.token}`
       },
       data: {
-        proveedor: body.proveedor,
+        clienteId: body.clienteId,
         tipo_comprobante: body.tipo_comprobante,
         num_comprobante: body.num_comprobante,
         serie_comprobante: body.serie_comprobante,
         fecha: body.fecha,
         impuesto: body.impuesto,
+        descuento: body.descuento,
         total: body.total,
         detalles: body.detalles
       }
     });
 
-    commit("setIngresos", data);
+    commit("setVentas", data);
   } catch (error) {
     commit("setError", true);
     commit("setErrors", error);
   }
 }
 
-export async function deleteIngreso({ commit }, ingreso) {
+export async function deleteVenta({ commit }, venta) {
   try {
     const { data } = await Vue.axios({
       method: "DELETE",
-      url: `/ingreso/${ingreso._id}`,
+      url: `/venta/${venta._id}`,
       headers: {
-        Authorization: `Bearer ${ingreso.token}`
+        Authorization: `Bearer ${venta.token}`
       }
     });
 
-    commit("setIngresos", data);
+    commit("setVentas", data);
   } catch (error) {
     commit("setError", true);
     commit("setErrors", error);
