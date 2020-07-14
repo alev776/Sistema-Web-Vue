@@ -23,7 +23,7 @@
             placeholder="Select"
             class="selectExample"
             label="Tipo Comprobante"
-            v-model="tipo_comprobante"
+            v-model="ingresosModel.tipo_comprobante"
           >
             <vs-select-item
               :key="index"
@@ -43,11 +43,13 @@
           vs-sm="6"
           vs-xs="5"
         >
-          <div>
-            <md-datepicker v-model="ingresosModel.fecha">
-            <label>Select date</label>
-          </md-datepicker>
-          </div>
+
+          <md-field class="has-green">
+            <md-icon>date_range</md-icon>
+            <label>Fecha</label>
+            <md-input v-model="ingresosModel.fecha"></md-input>
+          </md-field>
+
         </vs-col>
 
         <vs-col
@@ -94,7 +96,7 @@
             placeholder="Select"
             class="selectExample"
             label="Proveedor"
-            v-model="proveedorModel"
+            v-model="ingresosModel.proveedor"
           >
             <vs-select-item
               :key="index"
@@ -190,6 +192,12 @@
 
                 <template slot="edit" >
                 <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.cantidad"/>
+                <vs-button
+                  type="flat"
+                  @click="handle(data, tr)"
+                  size="small"
+                  icon="add"
+                ></vs-button>
                 </template>
             </vs-td>
 
@@ -198,6 +206,12 @@
 
                 <template slot="edit" >
                 <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.precio"/>
+                <vs-button
+                  type="flat"
+                  @click="handle(data, tr)"
+                  size="medium"
+                  icon="delete"
+                ></vs-button>
                 </template>
             </vs-td>
 
@@ -303,24 +317,17 @@ export default {
         total: "",
         _id: "",
         fecha: "",
-        codigo: "",
-        token: "",
+        proveedor: '',
+        tipo_comprobante: "",
       },
       art: {},
-      detalles: {
-          idArticulo: "",
-          precio: 0,
-          cantidad: 0,
-          _id: ""
-      },
-      proveedorModel: '',
-      tipo_comprobante: "",
       articuloVal: '',
       articulosArray: [],
       tipo_documentos: ["Cédula", "Pasaporte", "RNC"],
       index: null,
-      id: {},
-      prompt: false
+      id: '',
+      prompt: false,
+      neto: 0
     };
   },
   beforeMount() {
@@ -349,11 +356,6 @@ export default {
           contador += x.subtotal
         });
       }
-      const formatter  = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD'
-      });
-
       return this.currencyFormatter(contador);
 
     },
@@ -388,7 +390,7 @@ export default {
       getArticulos: "articulos/getArticulos",
       getProveedor: "proveedores/getProveedor",
       postIngresos: "ingresos/postIngresos",
-      editProveedor: "proveedores/editProveedor",
+      editIngreso: "ingresos/editIngreso",
       deleteProveedor: "proveedores/deleteProveedor"
     }),
     currencyFormatter(money) {
@@ -400,18 +402,32 @@ export default {
       return formatter.format(money);
     },
     model(data) {
+      const ingresoId = this.ingresosArray.find(x => x.total === data.total && x.num_comprobante === data.num_comprobante && x.serie_comprobante === data.serie_comprobante);
       Object.assign(this.ingresosModel, data);
-      const id = this.proveedor.find(x => x.email === data.email);
-      this.ingresosModel._id = id._id;
+      this.ingresosDetalles.forEach(x => {
+        const articulo = this.articulos.find(y => y._id === x.idArticulo);
+        x.nombre = articulo.nombre;
+        x.subtotal = x.precio * x.cantidad;
+      });
+      this.id = ingresoId._id;
+
+      let det = this.ingresosDetalles.filter(x => x.idIngreso === ingresoId._id);
+      this.articulosArray = det;
 
       this.prompt = true;
       this.index = -1;
     },
     handle(t, r) {
-      const indexR = t.findIndex(x => x._id === r._id);
-      const index = this.articulosArray.findIndex(x => x._id === t[indexR]._id);
-      t[index].subtotal = t[index].cantidad * t[index].precio;
-      this.articulosArray = t;
+      const indexR = this.articulosArray.findIndex(x => x._id === r._id);
+          t[indexR].subtotal = r.cantidad * r.precio;
+          t[indexR].idArticulo = r._id
+          this.articulosArray = t;
+
+      // const indexR = t.findIndex(x => x._id === r._id);
+      // const index = this.articulosArray.findIndex(x => x._id === t[indexR]._id);
+      // t[index].subtotal = t[index].cantidad * t[index].precio;
+      // delete t[index]._id;
+      // this.articulosArray = t;
     },
     deleteArticulo(articulo) {
       const index = this.articulosArray.findIndex(x => x._id === articulo._id);
@@ -425,8 +441,6 @@ export default {
       await this.getIngresos(this.token);
       await this.getProveedor(this.token);
       await this.getArticulos(this.token);
-
-      const date = new Date();
     },
     newArray() {
       const headers = [
@@ -444,6 +458,7 @@ export default {
           let proveedor = this.proveedor.find(y => y._id === x.proveedor);
           if (proveedor) {
             x.proveedor = proveedor.name;
+            x.fecha = new Date(x.fecha).toISOString().substr(0, 10);
           }
         });
       }
@@ -469,13 +484,13 @@ export default {
           articulo.precio = 1;
           articulo.subtotal = articulo.cantidad * articulo.precio;
 
-          const exist = this.articulosArray.some(x => x._id === articulo._id);
+          const exist = this.articulosArray.some(x => x._id === articulo._id || x.idArticulo === articulo._id);
           if (exist) {
             this.$vs.dialog({
               icon: "error",
               color: "danger",
               title: `Articulo ya agregado`,
-              text: `El articulo ${articulo.nombre} ya ha sido agregado`
+              text: `El artículo ${articulo.nombre} ya ha sido agregado`
             });
           } else {
             this.articulosArray.push(articulo);
@@ -484,9 +499,19 @@ export default {
     },
     async update() {
       this.ingresosModel.token = this.token;
+      this.ingresosModel._id = this.id
+
+      let contador = 0;
+      this.articulosArray.forEach(x => {
+        contador += x.subtotal;
+      });
+      this.ingresosModel.total = contador;
+      this.articuloVal = '';
       this.cleanErrors();
-      await this.editProveedor(this.ingresosModel);
-      await this.getProveedor(this.token);
+      this.ingresosModel.detalles = this.articulosArray;
+      console.log(this.ingresosModel);
+      await this.editIngreso(this.ingresosModel);
+      await this.getIngresos(this.token);
       this.prompt = false;
 
       if (this.$store.state.proveedores.error) {
@@ -509,14 +534,23 @@ export default {
       }
     },
     async post() {
-      return console.log(this.ingresosModel, this.tipo_comprobante, this.proveedorModel, this.articulosArray);
       this.ingresosModel.token = this.token;
+      let contador = 0;
+      this.articulosArray.forEach(x => {
+        x.precio = parseInt(x.precio);
+        x.cantidad = parseInt(x.cantidad);
+        contador += x.subtotal;
+      });
+
+      this.ingresosModel.impuesto = parseInt(this.ingresosModel.impuesto);
+      this.ingresosModel.detalles = this.articulosArray;
+      this.ingresosModel.total = contador;
       this.cleanErrors();
-      await this.postProveedor(this.ingresosModel);
-      await this.getProveedor(this.token);
+      await this.postIngresos(this.ingresosModel);
+      await this.getIngresos(this.token);
       this.prompt = false;
 
-      if (this.$store.state.proveedores.error) {
+      if (this.$store.state.ingresos.error) {
         this.$vs.notify({
           time: 4000,
           position: "top-center",
@@ -531,9 +565,16 @@ export default {
           position: "top-center",
           icon: "check_box",
           color: "success",
-          title: "Proveedor Agregado!"
+          title: "Ingreso Agregado!"
         });
       }
+    },
+    reverseFormatNumber(val,locale){
+        var group = new Intl.NumberFormat(locale).format(1111).replace(/1/g, '');
+        var decimal = new Intl.NumberFormat(locale).format(1.1).replace(/1/g, '');
+        var reversedVal = val.replace(new RegExp('\\' + group, 'g'), '');
+        reversedVal = reversedVal.replace(new RegExp('\\' + decimal, 'g'), '.');
+        return Number.isNaN(reversedVal)?0:reversedVal;
     },
     eliminar(el) {
       const id = this.proveedor.find(x => x.email === el.email);
@@ -584,12 +625,12 @@ export default {
       this.ingresosModel = {};
       this.articulosArray = [];
       this.articuloVal = '';
-      this.tipo_comprobante = '',
-      this.proveedorModel = ''
+      this.ingresosModel.tipo_comprobante = '',
+      this.ingresosModel.proveedor = ''
     },
     cleanErrors() {
-      this.$store.state.proveedores.error = false;
-      this.$store.state.proveedores.errorMessage = "";
+      this.$store.state.ingresos.error = false;
+      this.$store.state.ingresos.errorMessage = "";
     }
   },
   components: {

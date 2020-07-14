@@ -24,7 +24,7 @@
                   <h3>
                     {{ title }}
                   </h3>
-                  <div id="btn">
+                  <div id="btn" align-end>
                     <vs-button
                       color="primary"
                       @click="btn"
@@ -157,7 +157,7 @@ export default {
 
 #btn {
   width: 12%;
-  margin-left: 37%;
+  margin-left: 48%;
 }
 
 .con-expand-users .con-btns-user {

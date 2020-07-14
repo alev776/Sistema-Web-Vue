@@ -26,13 +26,14 @@ export async function postIngresos({ commit }, body) {
         Authorization: `Bearer ${body.token}`
       },
       data: {
-        proveedor: body.proveedorId,
+        proveedor: body.proveedor,
         tipo_comprobante: body.tipo_comprobante,
         num_comprobante: body.num_comprobante,
         serie_comprobante: body.serie_comprobante,
         fecha: body.fecha,
         impuesto: body.impuesto,
-        total: body.total
+        total: body.total,
+        detalles: body.detalles
       }
     });
 
@@ -58,7 +59,8 @@ export async function editIngreso({ commit }, body) {
         serie_comprobante: body.serie_comprobante,
         fecha: body.fecha,
         impuesto: body.impuesto,
-        total: body.total
+        total: body.total,
+        detalles: body.detalles
       }
     });
 
