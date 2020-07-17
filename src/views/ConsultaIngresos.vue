@@ -4,10 +4,9 @@
       @data="model"
       :array="newArray()"
       :header="header"
-      title="Ingresos"
-      @btn="nuevo"
-      @eliminar="eliminar"
-      search="true"
+      title="Consulta Compras"
+      :date="true"
+      @dateTime="dateTime"
     >
     </data-table>
     <vs-popup class="holamundo" title="Ingresos" :active.sync="prompt">
@@ -23,6 +22,7 @@
           <vs-select
             placeholder="Select"
             class="selectExample"
+            disabled
             label="Tipo Comprobante"
             v-model="ingresosModel.tipo_comprobante"
           >
@@ -48,7 +48,7 @@
           <md-field class="has-green">
             <md-icon>date_range</md-icon>
             <label>Fecha</label>
-            <md-input v-model="ingresosModel.fecha"></md-input>
+            <md-input v-model="ingresosModel.fecha" disabled></md-input>
           </md-field>
 
         </vs-col>
@@ -65,7 +65,7 @@
           <md-field class="has-green">
             <md-icon>phone</md-icon>
             <label>Série Comprobante</label>
-            <md-input v-model="ingresosModel.serie_comprobante"></md-input>
+            <md-input v-model="ingresosModel.serie_comprobante" disabled></md-input>
           </md-field>
         </vs-col>
 
@@ -81,7 +81,7 @@
           <md-field class="has-green">
             <md-icon>place</md-icon>
             <label>Número Comprobante</label>
-            <md-input v-model="ingresosModel.num_comprobante"></md-input>
+            <md-input v-model="ingresosModel.num_comprobante" disabled></md-input>
           </md-field>
         </vs-col>
 
@@ -97,6 +97,7 @@
             placeholder="Select"
             class="selectExample"
             label="Proveedor"
+            disabled
             v-model="ingresosModel.proveedor"
           >
             <vs-select-item
@@ -119,34 +120,9 @@
         >
           <md-field class="has-green">
             <label>Impuesto</label>
-            <md-input v-model="ingresosModel.impuesto">1</md-input>
+            <md-input v-model="ingresosModel.impuesto" disabled>1</md-input>
           </md-field>
         </vs-col>
-
-        <vs-col
-          vs-type="flex"
-          vs-offset="0.5"
-          vs-w="5"
-          vs-lg="12"
-          vs-sm="6"
-          vs-xs="5"
-        >
-          <vs-select
-            placeholder="Select"
-            class="selectExample"
-            label="Agregar Artículo"
-            @change="articulosModel"
-            v-model="articuloVal"
-          >
-            <vs-select-item
-              :key="index"
-              :value="item._id"
-              :text="item.nombre"
-              v-for="(item, index) in articulos"
-            />
-          </vs-select>
-        </vs-col>
-
       </vs-row>
       <div>
         <vs-table
@@ -155,10 +131,6 @@
             v-if="articulosArray.length > 0"
         >
           <template slot="thead">
-            <vs-th>
-              Borrar
-            </vs-th>
-
             <vs-th>
               Artículo
             </vs-th>
@@ -175,51 +147,21 @@
 
           <template slot-scope="{ data }">
             <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
-                <vs-button
-                  type="flat"
-                  @click="deleteArticulo(tr)"
-                  size="small"
-                  icon="delete"
-                ></vs-button>
-              </vs-td>
-
               <vs-td :data="tr.nombre">
                 {{ tr.nombre }}
               </vs-td>
 
               <vs-td :data="tr.cantidad">
-                {{tr.cantidad}}
+                  {{tr.cantidad}}
+              </vs-td>
 
-                <template slot="edit" >
-                <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.cantidad"/>
-                <vs-button
-                  type="flat"
-                  @click="handle(data, tr)"
-                  size="small"
-                  icon="update"
-                ></vs-button>
-                </template>
-            </vs-td>
+              <vs-td :data="tr.precio">
+                  {{tr.precio}}
+              </vs-td>
 
-            <vs-td :data="tr.precio">
-                {{tr.precio}}
-
-                <template slot="edit" >
-                <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.precio"/>
-                <vs-button
-                  type="flat"
-                  @click="handle(data, tr)"
-                  size="medium"
-                  icon="update"
-                ></vs-button>
-                </template>
-            </vs-td>
-
-            <vs-td :data="tr.subtotal" v-model="tr.subtotal">
-                {{tr.subtotal}}
-
-            </vs-td>
+              <vs-td :data="tr.subtotal" v-model="tr.subtotal">
+                  {{tr.subtotal}}
+              </vs-td>
             </vs-tr>
           </template>
         </vs-table>
@@ -262,30 +204,12 @@
         </div>
         <div class="btn">
         <vs-button
-          color="primary"
-          type="flat"
-          @click="post"
-          size="large"
-          v-if="index === 1"
-          icon="save"
-          >Add</vs-button
-        >
-        <vs-button
-          color="primary"
-          type="flat"
-          @click="update"
-          size="large"
-          v-else
-          icon="update"
-          >Update</vs-button
-        >
-        <vs-button
           color="danger"
           type="flat"
           size="large"
           @click="prompt = false"
           icon="cancel"
-          >Cancel</vs-button
+          >Close</vs-button
         >
       </div>
       </div>
@@ -333,6 +257,9 @@ export default {
   },
   beforeMount() {
     this.ingresos();
+  },
+  mounted() {
+    this.$store.state.ingresos.ingresos = []
   },
   computed: {
     token() {
@@ -387,13 +314,12 @@ export default {
   },
   methods: {
     ...mapActions({
-      getIngresos: "ingresos/getIngresos",
       getArticulos: "articulos/getArticulos",
-      getProveedor: "proveedores/getProveedor",
-      postIngresos: "ingresos/postIngresos",
-      editIngreso: "ingresos/editIngreso",
-      deleteIngreso: "ingresos/deleteIngreso"
+      getProveedor: "proveedores/getProveedor"
     }),
+    async dateTime(time) {
+      await this.$store.dispatch('ingresos/getIngresosByDate', time);
+    },
     currencyFormatter(money) {
       const formatter  = new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -418,22 +344,7 @@ export default {
       this.prompt = true;
       this.index = -1;
     },
-    handle(t, r) {
-      const indexR = this.articulosArray.findIndex(x => x._id === r._id);
-          t[indexR].subtotal = r.cantidad * r.precio;
-          t[indexR].idArticulo = r._id
-          this.articulosArray = t;
-    },
-    deleteArticulo(articulo) {
-      const index = this.articulosArray.findIndex(x => x._id === articulo._id);
-      this.articulosArray.splice(index, 1);
-
-      if (!this.articulosArray.length > 0) {
-        this.articuloVal = '';
-      }
-    },
     async ingresos() {
-      await this.getIngresos(this.token);
       await this.getProveedor(this.token);
       await this.getArticulos(this.token);
     },
@@ -471,160 +382,6 @@ export default {
         });
       }
       return arreglo;
-    },
-    articulosModel() {
-        const articulo =  this.articulos.find(x => x._id === this.articuloVal);
-        if (articulo) {
-          articulo.cantidad = 1;
-          articulo.precio = 1;
-          articulo.subtotal = articulo.cantidad * articulo.precio;
-
-          const exist = this.articulosArray.some(x => x._id === articulo._id || x.idArticulo === articulo._id);
-          if (exist) {
-            this.$vs.dialog({
-              icon: "error",
-              color: "danger",
-              title: `Articulo ya agregado`,
-              text: `El artículo ${articulo.nombre} ya ha sido agregado`
-            });
-          } else {
-            this.articulosArray.push(articulo);
-          }
-        }
-    },
-    async update() {
-      this.ingresosModel.token = this.token;
-      this.ingresosModel._id = this.id
-      const proveedor = this.proveedor.find(x => x._id === this.ingresosModel.proveedor);
-      if (proveedor) {
-        this.ingresosModel.proveedor = proveedor._id;
-      }else {
-        const proveedorName = this.proveedor.find(x => x.name === this.ingresosModel.proveedor);
-          this.ingresosModel.proveedor = proveedorName._id;
-      }
-
-      let contador = 0;
-      this.articulosArray.forEach(x => {
-        contador += x.subtotal;
-      });
-      this.ingresosModel.total = contador;
-      this.articuloVal = '';
-      this.cleanErrors();
-      this.ingresosModel.detalles = this.articulosArray;
-      await this.editIngreso(this.ingresosModel);
-      await this.getIngresos(this.token);
-      this.prompt = false;
-
-      if (this.$store.state.ingresos.error) {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "error",
-          color: "danger",
-          title: "Algo ha salido mal!",
-          text: "Por favor inténtelo de nuevo más tarde"
-        });
-      } else {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "update",
-          color: "primary",
-          title: "Ingreso Actulizado!"
-        });
-      }
-    },
-    async post() {
-      this.ingresosModel.token = this.token;
-      let contador = 0;
-      this.articulosArray.forEach(x => {
-        x.precio = parseInt(x.precio);
-        x.cantidad = parseInt(x.cantidad);
-        contador += x.subtotal;
-      });
-
-      this.ingresosModel.impuesto = parseInt(this.ingresosModel.impuesto);
-      this.ingresosModel.detalles = this.articulosArray;
-      this.ingresosModel.total = contador;
-      this.cleanErrors();
-      await this.postIngresos(this.ingresosModel);
-      await this.getIngresos(this.token);
-      this.prompt = false;
-
-      if (this.$store.state.ingresos.error) {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "error",
-          color: "danger",
-          title: "Algo ha salido mal!",
-          text: "Por favor inténtelo de nuevo más tarde"
-        });
-      } else {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "check_box",
-          color: "success",
-          title: "Ingreso Agregado!"
-        });
-      }
-    },
-    eliminar(el) {
-      const ingresoId = this.ingresosArray.find(x => x.total === el.total && x.num_comprobante === el.num_comprobante && x.serie_comprobante === el.serie_comprobante);
-      ingresoId.token = this.token;
-      this.art = ingresoId;
-      this.cleanErrors();
-
-      this.$vs.dialog({
-        type: "confirm",
-        color: "danger",
-        title: `Confirm`,
-        text: `¿Está seguro que desea eliminar el ingreso con el número de comprobante ${ingresoId.num_comprobante}?`,
-        accept: this.acceptAlert
-      });
-    },
-    async acceptAlert() {
-      await this.deleteIngreso(this.art);
-      await this.getIngresos(this.token);
-
-      document.querySelector(".content-tr-expand").style.display = "none";
-      document
-        .querySelector(".content-tr-expand")
-        .classList.remove(".content-tr-expand");
-
-      if (this.$store.state.ingresos.error) {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "error",
-          color: "danger",
-          title: "Algo ha salido mal!",
-          text: "Por favor inténtelo de nuevo más tarde"
-        });
-      } else {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "delete",
-          color: "danger",
-          title: "Eliminación Exitosa!",
-          text: `Ingreso eliminado`
-        });
-      }
-    },
-    nuevo(bool) {
-      this.prompt = true;
-      this.index = 1;
-      this.ingresosModel = {};
-      this.articulosArray = [];
-      this.articuloVal = '';
-      this.ingresosModel.tipo_comprobante = '',
-      this.ingresosModel.proveedor = ''
-    },
-    cleanErrors() {
-      this.$store.state.ingresos.error = false;
-      this.$store.state.ingresos.errorMessage = "";
     }
   },
   components: {

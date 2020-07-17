@@ -8,6 +8,7 @@
       :button="button"
       @btn="nuevo"
       @eliminar="eliminar"
+      search="true"
     >
     </data-table>
     <vs-prompt

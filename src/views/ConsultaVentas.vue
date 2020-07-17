@@ -4,10 +4,9 @@
       @data="model"
       :array="newArray()"
       :header="header"
-      title="Ventas"
-      @btn="nuevo"
-      @eliminar="eliminar"
-      :search="true"
+      title="Consulta Ventas"
+      :date="true"
+      @dateTime="dateTime"
     >
     </data-table>
     <vs-popup class="holamundo" title="Ventas" :active.sync="prompt">
@@ -24,6 +23,7 @@
             placeholder="Select"
             class="selectExample"
             label="Tipo Comprobante"
+            disabled
             v-model="ventasModel.tipo_comprobante"
           >
             <vs-select-item
@@ -48,7 +48,7 @@
           <md-field class="has-green">
             <md-icon>date_range</md-icon>
             <label>Fecha</label>
-            <md-input v-model="ventasModel.fecha"></md-input>
+            <md-input v-model="ventasModel.fecha" disabled></md-input>
           </md-field>
 
         </vs-col>
@@ -65,7 +65,7 @@
           <md-field class="has-green">
             <md-icon>phone</md-icon>
             <label>Série Comprobante</label>
-            <md-input v-model="ventasModel.serie_comprobante"></md-input>
+            <md-input v-model="ventasModel.serie_comprobante" disabled></md-input>
           </md-field>
         </vs-col>
 
@@ -81,7 +81,7 @@
           <md-field class="has-green">
             <md-icon>place</md-icon>
             <label>Número Comprobante</label>
-            <md-input v-model="ventasModel.num_comprobante"></md-input>
+            <md-input v-model="ventasModel.num_comprobante" disabled></md-input>
           </md-field>
         </vs-col>
 
@@ -97,6 +97,7 @@
             placeholder="Select"
             class="selectExample"
             label="clientes"
+            disabled
             v-model="ventasModel.clienteId"
           >
             <vs-select-item
@@ -119,7 +120,7 @@
         >
           <md-field class="has-green">
             <label>Impuesto</label>
-            <md-input v-model="ventasModel.impuesto">1</md-input>
+            <md-input v-model="ventasModel.impuesto" disabled>1</md-input>
           </md-field>
         </vs-col>
 
@@ -135,7 +136,7 @@
             placeholder="Select"
             class="selectExample"
             label="Agregar Artículo"
-            @change="articulosModel"
+            disabled
             v-model="articuloVal"
           >
             <vs-select-item
@@ -158,7 +159,7 @@
         >
           <md-field class="has-green">
             <label>Descuento</label>
-            <md-input v-model="ventasModel.descuento">1</md-input>
+            <md-input v-model="ventasModel.descuento" disabled></md-input>
           </md-field>
         </vs-col>
 
@@ -170,10 +171,6 @@
             v-if="articulosArray.length > 0"
         >
           <template slot="thead">
-            <vs-th>
-              Borrar
-            </vs-th>
-
             <vs-th>
               Artículo
             </vs-th>
@@ -190,45 +187,16 @@
 
           <template slot-scope="{ data }">
             <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
-                <vs-button
-                  type="flat"
-                  @click="deleteArticulo(tr)"
-                  size="small"
-                  icon="delete"
-                ></vs-button>
-              </vs-td>
-
               <vs-td :data="tr.nombre">
                 {{ tr.nombre }}
               </vs-td>
 
               <vs-td :data="tr.cantidad">
                 {{tr.cantidad}}
-
-                <template slot="edit" >
-                <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.cantidad"/>
-                <vs-button
-                  type="flat"
-                  @click="handle(data, tr)"
-                  size="small"
-                  icon="update"
-                ></vs-button>
-                </template>
             </vs-td>
 
             <vs-td :data="tr.precio">
                 {{tr.precio}}
-
-                <template slot="edit" >
-                <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.precio"/>
-                <vs-button
-                  type="flat"
-                  @click="handle(data, tr)"
-                  size="medium"
-                  icon="update"
-                ></vs-button>
-                </template>
             </vs-td>
 
             <vs-td :data="tr.subtotal" v-model="tr.subtotal">
@@ -289,24 +257,6 @@
         </div>
         <div class="btn">
         <vs-button
-          color="primary"
-          type="flat"
-          @click="post"
-          size="large"
-          v-if="index === 1"
-          icon="save"
-          >Add</vs-button
-        >
-        <vs-button
-          color="primary"
-          type="flat"
-          @click="update"
-          size="large"
-          v-else
-          icon="update"
-          >Update</vs-button
-        >
-        <vs-button
           color="danger"
           type="flat"
           size="large"
@@ -361,6 +311,9 @@ export default {
   },
   beforeMount() {
     this.ventas();
+  },
+  mounted() {
+    this.$store.state.ventas.ventas = [];
   },
   computed: {
     token() {
@@ -428,15 +381,14 @@ export default {
   },
   methods: {
     ...mapActions({
-      getVentas: "ventas/getVentas",
+      getVentasByDate: "ventas/getVentasByDate",
       getArticulos: "articulos/getArticulos",
-      getClientes: "clientes/getClientes",
-      postVentas: "ventas/postVentas",
-      editVenta: "ventas/editVenta",
-      deleteVenta: "ventas/deleteVenta"
+      getClientes: "clientes/getClientes"
     }),
+    async dateTime(time) {
+      await this.getVentasByDate(time);
+    },
       async ventas() {
-        await this.getVentas(this.token);
         await this.getClientes(this.token);
         await this.getArticulos(this.token);
       },
@@ -470,14 +422,6 @@ export default {
           t[indexR].subtotal = r.cantidad * r.precio;
           t[indexR].idArticulo = r._id
           this.articulosArray = t;
-    },
-    deleteArticulo(articulo) {
-      const index = this.articulosArray.findIndex(x => x._id === articulo._id);
-      this.articulosArray.splice(index, 1);
-
-      if (!this.articulosArray.length > 0) {
-        this.articuloVal = '';
-      }
     },
     newArray() {
       const headers = [
@@ -513,163 +457,6 @@ export default {
         });
       }
       return arreglo;
-    },
-    articulosModel() {
-        const articulo =  this.articulos.find(x => x._id === this.articuloVal);
-        if (articulo) {
-          articulo.cantidad = 1;
-          articulo.precio = 1;
-          articulo.subtotal = articulo.cantidad * articulo.precio;
-
-          const exist = this.articulosArray.some(x => x._id === articulo._id || x.idArticulo === articulo._id);
-          if (exist) {
-            this.$vs.dialog({
-              icon: "error",
-              color: "danger",
-              title: `Articulo ya agregado`,
-              text: `El artículo ${articulo.nombre} ya ha sido agregado`
-            });
-          } else {
-            this.articulosArray.push(articulo);
-          }
-        }
-    },
-    async update() {
-      this.ventasModel.token = this.token;
-      this.ventasModel._id = this.id;
-      const cliente = this.clientes.find(x => x.name === this.ventasModel.clienteId);
-      if (cliente) {
-        this.ventasModel.clienteId = cliente._id;
-      }else {
-        const clienteName = this.clientes.find(x => x._id === this.ventasModel.clienteId);
-          this.ventasModel.clienteId = clienteName._id;
-      }
-
-      let contador = 0;
-      this.articulosArray.forEach(x => {
-        contador += x.subtotal;
-      });
-      this.ventasModel.total = contador;
-      this.articuloVal = '';
-      this.cleanErrors();
-      this.ventasModel.detalles = this.articulosArray;
-      this.ventasModel.year = new Date(this.ventasModel.fecha).getFullYear()
-      await this.editVenta(this.ventasModel);
-      await this.getVentas(this.token);
-      this.prompt = false;
-
-      if (this.$store.state.ventas.error) {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "error",
-          color: "danger",
-          title: "Algo ha salido mal!",
-          text: "Por favor inténtelo de nuevo más tarde"
-        });
-      } else {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "update",
-          color: "primary",
-          title: "Venta Actulizada!"
-        });
-      }
-    },
-    async post() {
-      this.ventasModel.token = this.token;
-      let contador = 0;
-      this.articulosArray.forEach(x => {
-        x.precio = parseInt(x.precio);
-        x.cantidad = parseInt(x.cantidad);
-        x.descuento = parseInt(x.descuento);
-        contador += x.subtotal;
-      });
-
-      this.ventasModel.impuesto = parseInt(this.ventasModel.impuesto);
-      this.ventasModel.detalles = this.articulosArray;
-      this.ventasModel.total = contador;
-      this.ventasModel.year = new Date(this.ventasModel.fecha).getFullYear() || new Date().getFullYear()
-      this.cleanErrors();
-      await this.postVentas(this.ventasModel);
-      await this.getVentas(this.token);
-      this.prompt = false;
-
-      if (this.$store.state.ingresos.error) {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "error",
-          color: "danger",
-          title: "Algo ha salido mal!",
-          text: "Por favor inténtelo de nuevo más tarde"
-        });
-      } else {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "check_box",
-          color: "success",
-          title: "Ingreso Agregado!"
-        });
-      }
-    },
-    eliminar(el) {
-      const venta = this.ventasArray.find(x => x.total === el.total && x.num_comprobante === el.num_comprobante && x.serie_comprobante === el.serie_comprobante);
-      venta.token = this.token;
-      this.art = venta;
-      this.cleanErrors();
-
-      this.$vs.dialog({
-        type: "confirm",
-        color: "danger",
-        title: `Confirm`,
-        text: `¿Está seguro que desea eliminar La venta con el número de comprobante ${venta.num_comprobante}?`,
-        accept: this.acceptAlert
-      });
-    },
-    async acceptAlert() {
-      await this.deleteVenta(this.art);
-      await this.getVentas(this.token);
-
-      document.querySelector(".content-tr-expand").style.display = "none";
-      document
-        .querySelector(".content-tr-expand")
-        .classList.remove(".content-tr-expand");
-
-      if (this.$store.state.ventas.error) {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "error",
-          color: "danger",
-          title: "Algo ha salido mal!",
-          text: "Por favor inténtelo de nuevo más tarde"
-        });
-      } else {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "delete",
-          color: "danger",
-          title: "Eliminación Exitosa!",
-          text: `Venta eliminado`
-        });
-      }
-    },
-    nuevo(bool) {
-      this.prompt = true;
-      this.index = 1;
-      this.ventasModel = {};
-      this.articulosArray = [];
-      this.articuloVal = '';
-      this.ventasModel.tipo_comprobante = '',
-      this.ventasModel.clienteId = ''
-    },
-    cleanErrors() {
-      this.$store.state.ventas.error = false;
-      this.$store.state.ventas.errorMessage = "";
     }
   },
   components: {

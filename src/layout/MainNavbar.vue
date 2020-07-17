@@ -30,7 +30,7 @@
             Dashboard
           </vs-sidebar-item>
           <vs-sidebar-group title="Almacen">
-            <vs-sidebar-item index="2.1" icon="store" to="categorias">
+            <vs-sidebar-item index="2.1" icon="store" color="danger" to="categorias">
               Categorias
             </vs-sidebar-item>
             <vs-sidebar-item index="2.2" icon="nature_people" to="articulos">
@@ -38,19 +38,19 @@
             </vs-sidebar-item>
           </vs-sidebar-group>
           <vs-sidebar-group title="Compras">
-            <vs-sidebar-item index="2.1" icon="store" to="ingresos">
+            <vs-sidebar-item index="3.1" icon="store" to="ingresos">
               Ingresos
             </vs-sidebar-item>
-            <vs-sidebar-item index="2.2" icon="nature_people" to="proveedores">
+            <vs-sidebar-item index="3.2" icon="nature_people" to="proveedores">
               Proveedores
             </vs-sidebar-item>
           </vs-sidebar-group>
           <vs-sidebar-group title="Ventas">
-            <vs-sidebar-item index="2.1" icon="store" to="ventas">
+            <vs-sidebar-item index="4.1" icon="store" to="ventas">
               Ventas
             </vs-sidebar-item>
             <vs-sidebar-item
-              index="2.2"
+              index="4.2"
               icon="supervisor_account"
               to="clientes"
             >
@@ -58,10 +58,10 @@
             </vs-sidebar-item>
           </vs-sidebar-group>
           <vs-sidebar-group title="Consultas">
-            <vs-sidebar-item index="2.1" icon="search">
+            <vs-sidebar-item index="5.1" icon="search" to="consulta-ventas">
               Consulta de ventas
             </vs-sidebar-item>
-            <vs-sidebar-item index="2.2" icon="search">
+            <vs-sidebar-item index="5.2" icon="search" to="consulta-ingresos">
               Consulta de compras
             </vs-sidebar-item>
           </vs-sidebar-group>

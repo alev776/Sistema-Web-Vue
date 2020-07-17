@@ -7,6 +7,7 @@
       title="Proveedores"
       @btn="nuevo"
       @eliminar="eliminar"
+      search="true"
     >
     </data-table>
     <vs-popup class="holamundo" title="Proveedor" :active.sync="prompt">

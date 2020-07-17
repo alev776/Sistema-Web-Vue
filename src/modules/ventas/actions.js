@@ -17,6 +17,40 @@ export async function getVentas({ commit }, token) {
   }
 }
 
+export async function getVentasByDate({ commit }, body) {
+  try {
+    const { data } = await Vue.axios({
+      method: "GET",
+      url: `/ventasByDate/${body.startDate}/${body.endDate}`,
+      headers: {
+        Authorization: `Bearer ${body.token}`
+      }
+    });
+
+    commit("setVentas", data);
+  } catch (error) {
+    commit("setError", true);
+    commit("setErrors", error);
+  }
+}
+
+export async function getVentasByMonth({ commit }, body) {
+  try {
+    const { data } = await Vue.axios({
+      method: "GET",
+      url: `/ventaTotalPorMes/${body.year}`,
+      headers: {
+        Authorization: `Bearer ${body.token}`
+      }
+    });
+
+    commit("setVentasByMonth", data);
+  } catch (error) {
+    commit("setError", true);
+    commit("setErrors", error);
+  }
+}
+
 export async function postVentas({ commit }, body) {
   try {
     const { data } = await Vue.axios({
@@ -34,6 +68,7 @@ export async function postVentas({ commit }, body) {
         impuesto: body.impuesto,
         descuento: body.descuento,
         total: body.total,
+        year: body.year,
         detalles: body.detalles
       }
     });
@@ -62,6 +97,7 @@ export async function editVenta({ commit }, body) {
         impuesto: body.impuesto,
         descuento: body.descuento,
         total: body.total,
+        year: body.year,
         detalles: body.detalles
       }
     });

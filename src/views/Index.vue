@@ -1,294 +1,59 @@
 <template>
   <div class="wrapper">
-    <parallax class="page-header header-filter" :style="headerStyle">
-    </parallax>
-    <!-- <div class="features text-center">
-            <div class="md-layout">
-              <div class="md-layout-item md-medium-size-33 md-small-size-100">
-                <div class="info">
-                  <div class="icon icon-info">
-                    <md-icon>chat</md-icon>
-                  </div>
-                  <h4 class="info-title">Free Chat</h4>
-                  <p>
-                    Divide details about your product or agency work into parts.
-                    Write a few lines about each one. A paragraph describing a
-                    feature will be enough.
-                  </p>
-                </div>
-              </div>
-              <div class="md-layout-item md-medium-size-33 md-small-size-100">
-                <div class="info">
-                  <div class="icon icon-success">
-                    <md-icon>verified_user</md-icon>
-                  </div>
-                  <h4 class="info-title">Verified Users</h4>
-                  <p>
-                    Divide details about your product or agency work into parts.
-                    Write a few lines about each one. A paragraph describing a
-                    feature will be enough.
-                  </p>
-                </div>
-              </div>
-              <div class="md-layout-item md-medium-size-33 md-small-size-100">
-                <div class="info">
-                  <div class="icon icon-danger">
-                    <md-icon>fingerprint</md-icon>
-                  </div>
-                  <h4 class="info-title">Fingerprint</h4>
-                  <p>
-                    Divide details about your product or agency work into parts.
-                    Write a few lines about each one. A paragraph describing a
-                    feature will be enough.
-                  </p>
-                </div>
-              </div>
+    <div class="section text-center">
+      <div class="container">
+        <p>Total de Ventas: <strong>{{ totalVentas }}</strong></p>
+        <p>Año: <strong>{{ yearSelect }}</strong></p>
+        <vs-collapse>
+          <vs-collapse-item>
+            <div slot="header">
+              Filtros
             </div>
-          </div>
-        </div>
+              <vs-select
+                class="selectExample"
+                label="Seleccione el año"
+                v-model="yearSelect"
+                @change="getVentasByYear"
+                id="select1"
+                >
+                <vs-select-item :key="index" :value="item" :text="item" v-for="(item,index) in getYears()" />
+              </vs-select>
+              <vs-select
+                class="selectExample"
+                label="Diseño"
+                v-model="grafico"
+                @change="loadProductosMasVendidos"
+                id="select2"
+                >
+                <vs-select-item :key="index" :value="item" :text="item" v-for="(item,index) in graficoArray" />
+              </vs-select>
+          </vs-collapse-item>
+        </vs-collapse>
+        <canvas id="myChart" width="600" height="250"></canvas>
       </div>
-      <div class="section text-center">
-        <div class="container">
-          <h2 class="title">Here is our team</h2>
-          <div class="team">
-            <div class="md-layout">
-              <div class="md-layout-item md-medium-size-33 md-small-size-100">
-                <div class="team-player">
-                  <md-card class="md-card-plain">
-                    <div class="md-layout-item md-size-50 mx-auto">
-                      <img
-                        :src="teamImg1"
-                        alt="Thumbnail Image"
-                        class="img-raised rounded-circle img-fluid"
-                      />
-                    </div>
-                    <h4 class="card-title">
-                      Gigi Hadid
-                      <br />
-                      <small class="card-description text-muted">Model</small>
-                    </h4>
-
-                    <md-card-content>
-                      <p class="card-description">
-                        You can write here details about one of your team
-                        members. You can give more details about what they do.
-                        Feel free to add some <a href="#">links</a> for people
-                        to be able to follow them outside the site.
-                      </p>
-                    </md-card-content>
-
-                    <md-card-actions class="text-center">
-                      <md-button
-                        href="javascript:void(0)"
-                        class="md-just-icon md-simple"
-                      >
-                        <i class="fab fa-twitter"></i>
-                      </md-button>
-                      <md-button
-                        href="javascript:void(0)"
-                        class="md-just-icon md-simple"
-                      >
-                        <i class="fab fa-instagram"></i>
-                      </md-button>
-                      <md-button
-                        href="javascript:void(0)"
-                        class="md-just-icon md-simple"
-                      >
-                        <i class="fab fa-facebook-square"></i>
-                      </md-button>
-                    </md-card-actions>
-                  </md-card>
-                </div>
-              </div>
-              <div class="md-layout-item md-medium-size-33 md-small-size-100">
-                <div class="team-player">
-                  <md-card class="md-card-plain">
-                    <div class="md-layout-item md-size-50 mx-auto">
-                      <img
-                        :src="teamImg2"
-                        alt="Thumbnail Image"
-                        class="img-raised rounded-circle img-fluid"
-                      />
-                    </div>
-                    <h4 class="card-title">
-                      Carla Hortensia
-                      <br />
-                      <small class="card-description text-muted"
-                        >Designer</small
-                      >
-                    </h4>
-
-                    <md-card-content>
-                      <p class="card-description">
-                        You can write here details about one of your team
-                        members. You can give more details about what they do.
-                        Feel free to add some <a href="#">links</a> for people
-                        to be able to follow them outside the site.
-                      </p>
-                    </md-card-content>
-
-                    <md-card-actions class="text-center">
-                      <md-button
-                        href="javascript:void(0)"
-                        class="md-just-icon md-simple"
-                      >
-                        <i class="fab fa-twitter"></i>
-                      </md-button>
-                      <md-button
-                        href="javascript:void(0)"
-                        class="md-just-icon md-simple"
-                      >
-                        <i class="fab fa-linkedin"></i>
-                      </md-button>
-                    </md-card-actions>
-                  </md-card>
-                </div>
-              </div>
-              <div class="md-layout-item md-medium-size-33 md-small-size-100">
-                <div class="team-player">
-                  <md-card class="md-card-plain">
-                    <div class="md-layout-item md-size-50 mx-auto">
-                      <img
-                        :src="teamImg3"
-                        alt="Thumbnail Image"
-                        class="img-raised rounded-circle img-fluid"
-                      />
-                    </div>
-                    <h4 class="card-title">
-                      Kendall Jenner
-                      <br />
-                      <small class="card-description text-muted">Model</small>
-                    </h4>
-
-                    <md-card-content>
-                      <p class="card-description">
-                        You can write here details about one of your team
-                        members. You can give more details about what they do.
-                        Feel free to add some <a href="#">links</a> for people
-                        to be able to follow them outside the site.
-                      </p>
-                    </md-card-content>
-
-                    <md-card-actions class="text-center">
-                      <md-button
-                        href="javascript:void(0)"
-                        class="md-just-icon md-simple"
-                      >
-                        <i class="fab fa-twitter"></i>
-                      </md-button>
-                      <md-button
-                        href="javascript:void(0)"
-                        class="md-just-icon md-simple"
-                      >
-                        <i class="fab fa-instagram"></i>
-                      </md-button>
-                      <md-button
-                        href="javascript:void(0)"
-                        class="md-just-icon md-simple"
-                      >
-                        <i class="fab fa-facebook-square"></i>
-                      </md-button>
-                    </md-card-actions>
-                  </md-card>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="section section-contacts">
-        <div class="container">
-          <div class="md-layout">
-            <div class="md-layout-item md-size-66 md-xsmall-size-100 mx-auto">
-              <h2 class="text-center title">Work with us</h2>
-              <h4 class="text-center description">
-                Divide details about your product or agency work into parts.
-                Write a few lines about each one and contact us about any
-                further collaboration. We will responde get back to you in a
-                couple of hours.
-              </h4>
-              <form class="contact-form">
-                <div class="md-layout">
-                  <div class="md-layout-item md-size-50">
-                    <md-field>
-                      <label>Your Name</label>
-                      <md-input v-model="name" type="text"></md-input>
-                    </md-field>
-                  </div>
-                  <div class="md-layout-item md-size-50">
-                    <md-field>
-                      <label>Your Email</label>
-                      <md-input v-model="email" type="email"></md-input>
-                    </md-field>
-                  </div>
-                </div>
-                <md-field maxlength="5">
-                  <label>Your Message</label>
-                  <md-textarea v-model="message"></md-textarea>
-                </md-field>
-                <div class="md-layout">
-                  <div class="md-layout-item md-size-33 mx-auto text-center">
-                    <md-button class="md-success">Send Message</md-button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
 <script>
+import Chart from 'chart.js'
 export default {
   name: "index",
-  bodyClass: "index-page",
-  props: {
-    image: {
-      type: String,
-      default: require("@/assets/img/madara.jpg")
-    },
-    signup: {
-      type: String,
-      default: require("@/assets/img/city.jpg")
-    },
-    landing: {
-      type: String,
-      default: require("@/assets/img/landing.jpg")
-    },
-    profile: {
-      type: String,
-      default: require("@/assets/img/profile.jpg")
-    }
-  },
   data() {
     return {
       firstname: null,
-      // email: null,
-      // password: null,
-      leafShow: false,
       model: true,
-      data: [
-        {
-          name: "Lorem",
-          total: 30
-        },
-        {
-          name: "Ipsum",
-          total: 21
-        },
-        {
-          name: "Dolor",
-          total: 20
-        }
-      ]
+      nombreMeses: [],
+      totalMeses: [],
+      totalVentas: '',
+      yearSelect: new Date().getFullYear(),
+      grafico: 'pie',
+      graficoArray: ['pie', 'bar', 'line', 'radar', 'polarArea']
     };
   },
   beforeMount() {
     localStorage.setItem("user", this.$store.state.login.user.data.user.name);
     localStorage.setItem("img", this.$store.state.login.user.data.user.avatar);
-
     const user = this.$store.state.login.user;
     const text = `${user.data.user.name}`;
     if (user) {
@@ -300,32 +65,159 @@ export default {
       });
     }
   },
-  methods: {},
+  mounted() {
+    this.ventasByDate();
+    this.getYears();
+  },
   computed: {
-    headerStyle() {
-      return {
-        backgroundImage: `url(${this.image})`
-      };
+    ventasArray() {
+      return this.$store.state.ventas.ventas.ventas;
     },
-    signupImage() {
-      return {
-        backgroundImage: `url(${this.signup})`
-      };
+    ventasByMonth() {
+      return this.$store.state.ventas.ventasByMonth;
+    },
+    token() {
+      return window.localStorage.getItem("token");
+    },
+  },
+  methods: {
+    getYears() {
+      const currentYear = new Date().getFullYear();
+      let array = [];
+      for (let index = 0; index <= 5; index++) {
+        const element = currentYear - index;
+        array.push(element);
+      }
+      return array;
+    },
+    async ventasByDate() {
+      let body = {}
+      body.token = this.token;
+      body.year = this.yearSelect;
+      await this.$store.dispatch('ventas/getVentasByMonth', body);
+      this.loadProductosMasVendidos();
+    },
+    async getVentasByYear() {
+      let body = {};
+      body.token = this.token;
+      body.year = this.yearSelect;
+      await this.$store.dispatch('ventas/getVentasByMonth', body);
+      this.loadProductosMasVendidos();
+    },
+    loadProductosMasVendidos() {
+      this.nombreMeses = [];
+      this.totalMeses = [];
+      let mes = ''
+      let total = null
+      this.ventasByMonth.map(x => {
+        switch (parseInt(x._id)) {
+          case 1:
+            mes = 'Enero'
+            break;
+          case 2:
+            mes = 'Febrero'
+            break;
+          case 3:
+            mes = 'Marzo'
+            break;
+          case 4:
+            mes = 'Abril'
+            break;
+          case 5:
+            mes = 'Mayo'
+            break;
+          case 6:
+            mes = 'Junio'
+            break;
+          case 7:
+            mes = 'Julio'
+            break;
+          case 8:
+            mes = 'Agosto'
+            break;
+          case 9:
+            mes = 'Septiembre'
+            break;
+          case 10:
+            mes = 'Octubre'
+            break;
+          case 11:
+            mes = 'noviembre'
+            break;
+          case 12:
+            mes = 'Diciembre'
+            break;
+
+          default:
+            break;
+        }
+        this.nombreMeses.push(mes);
+        this.totalMeses.push(x.total);
+        total += parseInt(x.total);
+      });
+      this.totalVentas = total;
+
+      var ctx = document.getElementById('myChart').getContext('2d');
+      var myChart = new Chart(ctx, {
+          type: this.grafico,
+          data: {
+              labels: this.nombreMeses,
+              datasets: [{
+                  label: 'Ventas en los últimos 12 meses',
+                  data: this.totalMeses,
+                  backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(39, 205, 0, 0.2)',
+                      'rgba(147, 102, 0, 0.2)',
+                      'rgba(79, 164, 70, 0.2)',
+                      'rgba(153, 102, 255, 0.2)',
+                      'rgba(255, 159, 64, 0.2)',
+                      'rgba(133, 133, 234, 0.2)',
+                      'rgba(239, 235, 159, 0.2)',
+                      'rgba(255, 206, 86, 0.2)',
+                      'rgba(75, 192, 192, 0.2)',
+                      'rgba(214, 194, 194, 0.2)',
+                      'rgba(224, 182, 236, 0.2)'
+                  ],
+                  borderColor: [
+                      'rgba(255, 99, 132, 1)',
+                      'rgba(39, 205, 0, 1)',
+                      'rgba(147, 102, 0, 1)',
+                      'rgba(79, 164, 70, 1)',
+                      'rgba(153, 102, 255, 1)',
+                      'rgba(255, 159, 64, 1)',
+                      'rgba(133, 133, 234, 1)',
+                      'rgba(239, 235, 159, 1)',
+                      'rgba(255, 206, 86, 1)',
+                      'rgba(75, 192, 192, 1)',
+                      'rgba(214, 194, 194, 1)',
+                      'rgba(224, 182, 236, 1)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  yAxes: [{
+                      ticks: {
+                          beginAtZero: true
+                      }
+                  }]
+              }
+          }
+      });
     }
   },
-  components: {}
 };
 </script>
-<style lang="scss">
-.section-download {
-  .md-button + .md-button {
-    margin-left: 5px;
-  }
-}
 
-@media all and (min-width: 991px) {
-  .btn-container {
-    display: flex;
+<style lang="css">
+  #select2 {
+    margin-left: 45%;
+    margin-top: -6%;
+    width: 90px;
   }
-}
+  #select1 {
+    margin-left: 20%;
+  }
 </style>

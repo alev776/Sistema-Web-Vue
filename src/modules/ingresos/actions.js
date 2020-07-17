@@ -17,6 +17,23 @@ export async function getIngresos({ commit }, token) {
   }
 }
 
+export async function getIngresosByDate({ commit }, body) {
+  try {
+    const { data } = await Vue.axios({
+      method: "GET",
+      url: `/ingresosByDate/${body.startDate}/${body.endDate}`,
+      headers: {
+        Authorization: `Bearer ${body.token}`
+      }
+    });
+
+    commit("setIngresos", data);
+  } catch (error) {
+    commit("setError", true);
+    commit("setErrors", error);
+  }
+}
+
 export async function postIngresos({ commit }, body) {
   try {
     const { data } = await Vue.axios({

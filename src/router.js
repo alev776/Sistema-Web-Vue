@@ -14,8 +14,8 @@ import Ingresos from "./views/Ingresos";
 import User from "./views/User";
 import Clientes from "./views/Clientes";
 import Ventas from "./views/Ventas";
-
-import store from "./store";
+import ConsultaIngresos from "./views/ConsultaIngresos"
+import ConsultaVentas from "./views/ConsultaVentas"
 
 Vue.use(Router);
 
@@ -132,6 +132,26 @@ const routes = [
     path: "/ventas",
     name: "ventas",
     components: { default: Ventas, header: MainNavbar, footer: MainFooter },
+    props: {
+      header: { colorOnScroll: 400 },
+      footer: { backgroundColor: "black" }
+    },
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/consulta-ingresos",
+    name: "consultaIngresos",
+    components: { default: ConsultaIngresos, header: MainNavbar, footer: MainFooter },
+    props: {
+      header: { colorOnScroll: 400 },
+      footer: { backgroundColor: "black" }
+    },
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/consulta-ventas",
+    name: "consultaVentas",
+    components: { default: ConsultaVentas, header: MainNavbar, footer: MainFooter },
     props: {
       header: { colorOnScroll: 400 },
       footer: { backgroundColor: "black" }

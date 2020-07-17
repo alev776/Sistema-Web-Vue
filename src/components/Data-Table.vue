@@ -17,14 +17,14 @@
                 description-title="Registries"
                 description-connector="of"
                 description-body="Pages"
-                search
+                :search="search"
                 noDataText="Nothing to display"
               >
                 <template slot="header" color="primary">
                   <h3>
                     {{ title }}
                   </h3>
-                  <div id="btn" align-end>
+                  <div id="btn" align-end v-if="date === false">
                     <vs-button
                       color="primary"
                       @click="btn"
@@ -32,6 +32,20 @@
                       icon="add"
                       >Add</vs-button
                     >
+                  </div>
+                  <div class="md-layout" v-if="date">
+                    <div class="md-layout-item md-size-60" id="date">
+                      <md-datepicker v-model="startDate">
+                        <label>Desde</label>
+                      </md-datepicker>
+                    </div>
+                  </div>
+                  <div class="md-layout" v-if="date">
+                    <div class="md-layout-item md-size-60" id="date2">
+                      <md-datepicker v-model="endDate">
+                        <label>Hasta</label>
+                      </md-datepicker>
+                    </div>
                   </div>
                 </template>
                 <template slot="thead">
@@ -49,7 +63,7 @@
                     <vs-td v-for="(td, index) in tr" :key="index">
                       {{ td }}
                     </vs-td>
-                    <template class="expand-user" slot="expand">
+                    <template class="expand-user" slot="expand" v-if="date === false">
                       <div class="con-expand-users">
                         <div class="con-btns-user">
                           <div>
@@ -70,6 +84,10 @@
                             >
                           </div>
                         </div>
+                      </div>
+                    </template>
+                    <template class="expand-user" slot="expand" v-if="date === true">
+                      <div class="expand">
                       </div>
                     </template>
                   </vs-tr>
@@ -115,6 +133,14 @@ export default {
     printDoc: {
       type: Boolean,
       default: false
+    },
+    date: {
+      type: Boolean,
+      default: false
+    },
+    search: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -123,8 +149,27 @@ export default {
       descriptionItems: [3, 5, 10],
       icon: "",
       info: {},
-      new: false
+      new: false,
+      startDate: '',
+      endDate: '',
+      body: {}
     };
+  },
+  computed: {
+    token() {
+      return window.localStorage.getItem("token");
+    },
+    ingresosArray() {
+      return this.$store.state.ingresos.ingresos;
+    },
+  },
+  watch: {
+    endDate(newVal) {
+      this.body.token = this.token;
+      this.body.startDate = this.startDate;
+      this.body.endDate = newVal;
+      this.$emit('dateTime', this.body);
+    }
   },
   methods: {
     doubleSelection(tr) {
@@ -166,6 +211,13 @@ export default {
   padding-bottom: 0px;
   align-items: center;
   justify-content: space-between;
+}
+
+#date {
+  margin-left: 68%;
+}
+#date2 {
+  margin-left: 38%;
 }
 
 .con-expand-users .con-btns-user .con-userx {

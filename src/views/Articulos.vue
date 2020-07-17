@@ -7,6 +7,7 @@
       title="Articulos"
       @btn="nuevo"
       @eliminar="eliminar"
+      search="true"
     >
     </data-table>
     <vs-popup class="holamundo" title="Artículos" :active.sync="prompt">
