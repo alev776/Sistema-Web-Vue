@@ -12,310 +12,347 @@
     </data-table>
     <vs-popup class="holamundo" title="Ventas" :active.sync="prompt">
       <vs-row vs-w="12">
-        <vs-col
-          vs-type="flex"
-          vs-offset="0.5"
-          vs-w="5"
-          vs-lg="6"
-          vs-sm="6"
-          vs-xs="5"
-        >
-          <vs-select
-            placeholder="Select"
-            class="selectExample"
-            label="Tipo Comprobante"
-            v-model="ventasModel.tipo_comprobante"
+          <vs-col
+            vs-type="flex"
+            vs-offset="0.5"
+            vs-w="5"
+            vs-lg="6"
+            vs-sm="6"
+            vs-xs="5"
           >
-            <vs-select-item
-              :key="index"
-              :value="item"
-              :text="item"
-              v-for="(item, index) in tipo_documentos"
-            />
-          </vs-select>
-        </vs-col>
+            <vs-select
+              placeholder="Select"
+              class="selectExample"
+              label="Tipo Comprobante"
+              v-model="ventasModel.tipo_comprobante"
+              v-validate="'required'"
+              name="Comprobante"
+            >
+              <vs-select-item
+                :key="index"
+                :value="item"
+                :text="item"
+                v-for="(item, index) in tipo_documentos"
+              />
+            </vs-select>
+          </vs-col>
+          <div class="container-fluid">
+            <span style="color: red" id="font">{{ errors.first('Comprobante') }}</span>
+          </div>
 
-        <vs-col
-          vs-type="flex"
-          vs-justify="center"
-          vs-offset="-0.5"
-          vs-w="5"
-          vs-lg="5"
-          vs-sm="6"
-          vs-xs="5"
-        >
-
-          <md-field class="has-green">
-            <md-icon>date_range</md-icon>
-            <label>Fecha</label>
-            <md-input v-model="ventasModel.fecha"></md-input>
-          </md-field>
-
-        </vs-col>
-
-        <vs-col
-          vs-type="flex"
-          vs-justify="center"
-          vs-offset="0.5"
-          vs-w="5"
-          vs-lg="5"
-          vs-sm="6"
-          vs-xs="5"
-        >
-          <md-field class="has-green">
-            <md-icon>phone</md-icon>
-            <label>Série Comprobante</label>
-            <md-input v-model="ventasModel.serie_comprobante"></md-input>
-          </md-field>
-        </vs-col>
-
-        <vs-col
-          vs-type="flex"
-          vs-justify="center"
-          vs-offset="0.5"
-          vs-w="5"
-          vs-lg="5"
-          vs-sm="6"
-          vs-xs="5"
-        >
-          <md-field class="has-green">
-            <md-icon>place</md-icon>
-            <label>Número Comprobante</label>
-            <md-input v-model="ventasModel.num_comprobante"></md-input>
-          </md-field>
-        </vs-col>
-
-        <vs-col
-          vs-type="flex"
-          vs-offset="0.5"
-          vs-w="6"
-          vs-lg="5"
-          vs-sm="5"
-          vs-xs="5"
-        >
-          <vs-select
-            placeholder="Select"
-            class="selectExample"
-            label="clientes"
-            v-model="ventasModel.clienteId"
+          <vs-col
+            vs-type="flex"
+            vs-justify="center"
+            vs-offset="0.5"
+            vs-w="5"
+            vs-lg="5"
+            vs-sm="6"
+            vs-xs="5"
           >
-            <vs-select-item
-              :key="index"
-              :value="item._id"
-              :text="item.name"
-              v-for="(item, index) in clientes"
-            />
-          </vs-select>
-        </vs-col>
 
-        <vs-col
-          vs-type="flex"
-          vs-justify="center"
-          vs-offset="0.5"
-          vs-w="5"
-          vs-lg="5"
-          vs-sm="5"
-          vs-xs="5"
-        >
-          <md-field class="has-green">
-            <label>Impuesto</label>
-            <md-input v-model="ventasModel.impuesto">1</md-input>
-          </md-field>
-        </vs-col>
+            <md-field class="has-green" id="fecha">
+              <md-icon>date_range</md-icon>
+              <label>Fecha (yyyy-mm-dd)</label>
+              <md-input v-model="ventasModel.fecha"></md-input>
+            </md-field>
+          </vs-col>
+          <div class="container-fluid">
+            <span style="color: red" id="">{{ errors.first('date') }}</span>
+          </div>
 
-        <vs-col
-          vs-type="flex"
-          vs-offset="0.5"
-          vs-w="5"
-          vs-lg="5"
-          vs-sm="6"
-          vs-xs="5"
-        >
-          <vs-select
-            placeholder="Select"
-            class="selectExample"
-            label="Agregar Artículo"
-            @change="articulosModel"
-            v-model="articuloVal"
+          <vs-col
+            vs-type="flex"
+            vs-justify="center"
+            vs-offset="0.5"
+            vs-w="5"
+            vs-lg="5"
+            vs-sm="6"
+            vs-xs="5"
           >
-            <vs-select-item
-              :key="index"
-              :value="item._id"
-              :text="item.nombre"
-              v-for="(item, index) in articulos"
-            />
-          </vs-select>
-        </vs-col>
+            <md-field class="has-green">
+              <md-icon>drag_indicator</md-icon>
+              <label>Série Comprobante</label>
+              <md-input
+                v-model="ventasModel.serie_comprobante"
+                v-validate="'required'"
+                name="Série"
+                type="number"
+              >
+              </md-input>
+            </md-field>
+          </vs-col>
+          <div class="container-fluid">
+            <span style="color: red" id="font">{{ errors.first('Série') }}</span>
+          </div>
 
-        <vs-col
-          vs-type="flex"
-          vs-justify="center"
-          vs-offset="0.5"
-          vs-w="5"
-          vs-lg="5"
-          vs-sm="5"
-          vs-xs="5"
-        >
-          <md-field class="has-green">
-            <label>Descuento</label>
-            <md-input v-model="ventasModel.descuento">1</md-input>
-          </md-field>
-        </vs-col>
+          <vs-col
+            vs-type="flex"
+            vs-justify="center"
+            vs-offset="0.5"
+            vs-w="5"
+            vs-lg="5"
+            vs-sm="6"
+            vs-xs="5"
+          >
+            <md-field class="has-green" id="numeroComprobante">
+              <md-icon>drag_indicator</md-icon>
+              <label>Número Comprobante</label>
+              <md-input
+                v-model="ventasModel.num_comprobante"
+                v-validate="'required'"
+                name="Número"
+                type="number"
+              >
+              </md-input>
+            </md-field>
+          </vs-col>
+          <div class="container-fluid">
+            <span style="color: red" id="font" class="numeroComp">{{ errors.first('Número') }}</span>
+          </div>
 
-      </vs-row>
-      <div>
-        <vs-table
-            stripe
-            :data="articulosArray"
-            v-if="articulosArray.length > 0"
-        >
-          <template slot="thead">
-            <vs-th>
-              Borrar
-            </vs-th>
-
-            <vs-th>
-              Artículo
-            </vs-th>
-            <vs-th>
-              Cantidad
-            </vs-th>
-            <vs-th>
-              Precio
-            </vs-th>
-            <vs-th>
-              Subtotal
-            </vs-th>
-          </template>
-
-          <template slot-scope="{ data }">
-            <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
-                <vs-button
-                  type="flat"
-                  @click="deleteArticulo(tr)"
-                  size="small"
-                  icon="delete"
-                ></vs-button>
-              </vs-td>
-
-              <vs-td :data="tr.nombre">
-                {{ tr.nombre }}
-              </vs-td>
-
-              <vs-td :data="tr.cantidad">
-                {{tr.cantidad}}
-
-                <template slot="edit" >
-                <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.cantidad"/>
-                <vs-button
-                  type="flat"
-                  @click="handle(data, tr)"
-                  size="small"
-                  icon="update"
-                ></vs-button>
-                </template>
-            </vs-td>
-
-            <vs-td :data="tr.precio">
-                {{tr.precio}}
-
-                <template slot="edit" >
-                <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.precio"/>
-                <vs-button
-                  type="flat"
-                  @click="handle(data, tr)"
-                  size="medium"
-                  icon="update"
-                ></vs-button>
-                </template>
-            </vs-td>
-
-            <vs-td :data="tr.subtotal" v-model="tr.subtotal">
-                {{tr.subtotal}}
-
-            </vs-td>
-            </vs-tr>
-          </template>
-        </vs-table>
-        <div v-if="articulosArray.length > 0">
-          <vs-row vs-w="12">
-            <vs-col
-              vs-type="flex"
-              vs-justify="center"
-              vs-offset="6.6"
-              vs-w="5"
-              vs-lg="5"
-              vs-sm="6"
-              vs-xs="5"
+          <vs-col
+            vs-type="flex"
+            vs-offset="0.5"
+            vs-w="6"
+            vs-lg="5"
+            vs-sm="5"
+            vs-xs="5"
+          >
+            <vs-select
+              placeholder="Select"
+              class="selectExample"
+              label="Clientes"
+              v-model="ventasModel.clienteId"
+              v-validate="'required'"
+              name="Clientes"
             >
-              <strong>Total Parcial: {{ totalParcial }}</strong>
-            </vs-col>
-            <vs-col
-              vs-type="flex"
-              vs-justify="center"
-              vs-offset="6.5"
-              vs-w="5"
-              vs-lg="5"
-              vs-sm="6"
-              vs-xs="5"
-            >
-              <strong>Total Impuesto({{ ventasModel.impuesto }}%): {{ totalImpuestos }}</strong>
-            </vs-col>
-            <vs-col
-              v-if="ventasModel.descuento > 0"
-              vs-type="flex"
-              vs-justify="center"
-              vs-offset="6.5"
-              vs-w="5"
-              vs-lg="5"
-              vs-sm="6"
-              vs-xs="5"
-            >
-              <strong>Total Descuento({{ ventasModel.descuento }}%): {{ totalDescuento }}</strong>
-            </vs-col>
-            <vs-col
-              vs-type="flex"
-              vs-justify="center"
-              vs-offset="6.8"
-              vs-w="5"
-              vs-lg="5"
-              vs-sm="6"
-              vs-xs="5"
-            >
-              <strong>Total Neto: {{ totalNeto }}</strong>
-            </vs-col>
-          </vs-row>
+              <vs-select-item
+                :key="index"
+                :value="item._id"
+                :text="item.name"
+                v-for="(item, index) in clientes"
+              />
+            </vs-select>
+          </vs-col>
+          <div class="container-fluid">
+            <span style="color: red" id="font">{{ errors.first('Clientes') }}</span>
         </div>
-        <div class="btn">
-        <vs-button
-          color="primary"
-          type="flat"
-          @click="post"
-          size="large"
-          v-if="index === 1"
-          icon="save"
-          >Add</vs-button
-        >
-        <vs-button
-          color="primary"
-          type="flat"
-          @click="update"
-          size="large"
-          v-else
-          icon="update"
-          >Update</vs-button
-        >
-        <vs-button
-          color="danger"
-          type="flat"
-          size="large"
-          @click="prompt = false"
-          icon="cancel"
-          >Cancel</vs-button
-        >
-      </div>
-      </div>
+
+          <vs-col
+            vs-type="flex"
+            vs-justify="center"
+            vs-offset="0.5"
+            vs-w="5"
+            vs-lg="5"
+            vs-sm="5"
+            vs-xs="5"
+          >
+            <md-field class="has-green" id="impuesto">
+            <md-icon>attach_money</md-icon>
+            <label>Impuesto</label>
+                <md-input v-model="ventasModel.impuesto" type="number"></md-input>
+            </md-field>
+          </vs-col>
+          <div class="container-fluid">
+            <span style="color: red" id="font">{{ errors.first('impuesto') }}</span>
+          </div>
+
+          <vs-col
+            vs-type="flex"
+            vs-offset="0.5"
+            vs-w="5"
+            vs-lg="5"
+            vs-sm="6"
+            vs-xs="5"
+          >
+            <vs-select
+              placeholder="Select"
+              class="selectExample"
+              label="Agregar Artículo"
+              @change="articulosModel"
+              v-model="articuloVal"
+            >
+              <vs-select-item
+                :key="index"
+                :value="item._id"
+                :text="item.nombre"
+                v-for="(item, index) in articulos"
+              />
+            </vs-select>
+          </vs-col>
+
+          <vs-col
+            vs-type="flex"
+            vs-justify="center"
+            vs-offset="0.9"
+            vs-w="5"
+            vs-lg="4"
+            vs-sm="5"
+            vs-xs="5"
+          >
+            <md-field class="has-green" id="descuento">
+              <md-icon>money_off</md-icon>
+              <label>Descuento</label>
+              <md-input v-model="ventasModel.descuento" type="number"></md-input>
+            </md-field>
+          </vs-col>
+
+        </vs-row>
+        <div>
+          <vs-table
+              stripe
+              :data="articulosArray"
+              v-if="articulosArray.length > 0"
+          >
+            <template slot="thead">
+              <vs-th>
+                Borrar
+              </vs-th>
+
+              <vs-th>
+                Artículo
+              </vs-th>
+              <vs-th>
+                Cantidad
+              </vs-th>
+              <vs-th>
+                Precio
+              </vs-th>
+              <vs-th>
+                Subtotal
+              </vs-th>
+            </template>
+
+            <template slot-scope="{ data }">
+              <vs-tr :key="indextr" v-for="(tr, indextr) in data">
+                <vs-td>
+                  <vs-button
+                    type="flat"
+                    @click="deleteArticulo(tr)"
+                    size="small"
+                    icon="delete"
+                  ></vs-button>
+                </vs-td>
+
+                <vs-td :data="tr.nombre">
+                  {{ tr.nombre }}
+                </vs-td>
+
+                <vs-td :data="tr.cantidad">
+                  {{tr.cantidad}}
+
+                  <template slot="edit" >
+                  <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.cantidad"/>
+                  <vs-button
+                    type="flat"
+                    @click="handle(data, tr)"
+                    size="small"
+                    icon="update"
+                  ></vs-button>
+                  </template>
+              </vs-td>
+
+              <vs-td :data="tr.precio">
+                  {{tr.precio}}
+
+                  <template slot="edit" >
+                  <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.precio"/>
+                  <vs-button
+                    type="flat"
+                    @click="handle(data, tr)"
+                    size="medium"
+                    icon="update"
+                  ></vs-button>
+                  </template>
+              </vs-td>
+
+              <vs-td :data="tr.subtotal" v-model="tr.subtotal">
+                  {{tr.subtotal}}
+
+              </vs-td>
+              </vs-tr>
+            </template>
+          </vs-table>
+          <div v-if="articulosArray.length > 0">
+            <vs-row vs-w="12">
+              <vs-col
+                vs-type="flex"
+                vs-justify="center"
+                vs-offset="6.6"
+                vs-w="5"
+                vs-lg="5"
+                vs-sm="6"
+                vs-xs="5"
+              >
+                <strong>Total Parcial: {{ totalParcial }}</strong>
+              </vs-col>
+              <vs-col
+                vs-type="flex"
+                vs-justify="center"
+                vs-offset="6.5"
+                vs-w="5"
+                vs-lg="5"
+                vs-sm="6"
+                vs-xs="5"
+              >
+                <strong>Total Impuesto({{ ventasModel.impuesto }}%): {{ totalImpuestos }}</strong>
+              </vs-col>
+              <vs-col
+                v-if="ventasModel.descuento > 0"
+                vs-type="flex"
+                vs-justify="center"
+                vs-offset="6.5"
+                vs-w="5"
+                vs-lg="5"
+                vs-sm="6"
+                vs-xs="5"
+              >
+                <strong>Total Descuento({{ ventasModel.descuento }}%): {{ totalDescuento }}</strong>
+              </vs-col>
+              <vs-col
+                vs-type="flex"
+                vs-justify="center"
+                vs-offset="6.8"
+                vs-w="5"
+                vs-lg="5"
+                vs-sm="6"
+                vs-xs="5"
+              >
+                <strong>Total Neto: {{ totalNeto }}</strong>
+              </vs-col>
+            </vs-row>
+          </div>
+          <div class="btn">
+          <vs-button
+            color="primary"
+            type="flat"
+            @click="post"
+            size="large"
+            v-if="index === 1"
+            icon="save"
+            :disabled="errors.any()"
+            >Add</vs-button
+          >
+          <vs-button
+            color="primary"
+            type="flat"
+            @click="update"
+            size="large"
+            v-else
+            icon="update"
+            :disabled="errors.any()"
+            >Update</vs-button
+          >
+          <vs-button
+            color="danger"
+            type="flat"
+            size="large"
+            @click="prompt = false"
+            icon="cancel"
+            >Cancel</vs-button
+          >
+        </div>
+        </div>
     </vs-popup>
   </div>
 </template>
@@ -325,6 +362,7 @@ import DataTable from "../components/Data-Table";
 import { mapActions } from "vuex";
 
 export default {
+
   name: "articulos",
   data() {
     return {
@@ -449,6 +487,8 @@ export default {
       return formatter.format(money);
     },
     model(data) {
+      this.$validator.reset();
+      this.errors.clear();
       const venta = this.ventasArray.find(x => x.total === data.total && x.num_comprobante === data.num_comprobante && x.serie_comprobante === data.serie_comprobante);
       Object.assign(this.ventasModel, data);
       this.ventasModel.descuento = venta.descuento;
@@ -535,84 +575,92 @@ export default {
         }
     },
     async update() {
-      this.ventasModel.token = this.token;
-      this.ventasModel._id = this.id;
-      const cliente = this.clientes.find(x => x.name === this.ventasModel.clienteId);
-      if (cliente) {
-        this.ventasModel.clienteId = cliente._id;
-      }else {
-        const clienteName = this.clientes.find(x => x._id === this.ventasModel.clienteId);
-          this.ventasModel.clienteId = clienteName._id;
-      }
-
-      let contador = 0;
-      this.articulosArray.forEach(x => {
-        contador += x.subtotal;
-      });
-      this.ventasModel.total = contador;
-      this.articuloVal = '';
-      this.cleanErrors();
-      this.ventasModel.detalles = this.articulosArray;
-      this.ventasModel.year = new Date(this.ventasModel.fecha).getFullYear()
-      await this.editVenta(this.ventasModel);
-      await this.getVentas(this.token);
-      this.prompt = false;
-
-      if (this.$store.state.ventas.error) {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "error",
-          color: "danger",
-          title: "Algo ha salido mal!",
-          text: "Por favor inténtelo de nuevo más tarde"
-        });
+      if (!await this.$validator.validate()) {
+        return;
       } else {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "update",
-          color: "primary",
-          title: "Venta Actulizada!"
+        this.ventasModel.token = this.token;
+        this.ventasModel._id = this.id;
+        const cliente = this.clientes.find(x => x.name === this.ventasModel.clienteId);
+        if (cliente) {
+          this.ventasModel.clienteId = cliente._id;
+        }else {
+          const clienteName = this.clientes.find(x => x._id === this.ventasModel.clienteId);
+            this.ventasModel.clienteId = clienteName._id;
+        }
+
+        let contador = 0;
+        this.articulosArray.forEach(x => {
+          contador += x.subtotal;
         });
+        this.ventasModel.total = contador;
+        this.articuloVal = '';
+        this.cleanErrors();
+        this.ventasModel.detalles = this.articulosArray;
+        this.ventasModel.year = new Date(this.ventasModel.fecha).getFullYear()
+        await this.editVenta(this.ventasModel);
+        await this.getVentas(this.token);
+        this.prompt = false;
+
+        if (this.$store.state.ventas.error) {
+          this.$vs.notify({
+            time: 4000,
+            position: "top-center",
+            icon: "error",
+            color: "danger",
+            title: "Algo ha salido mal!",
+            text: "Por favor inténtelo de nuevo más tarde"
+          });
+        } else {
+          this.$vs.notify({
+            time: 4000,
+            position: "top-center",
+            icon: "update",
+            color: "primary",
+            title: "Venta Actulizada!"
+          });
+        }
       }
     },
     async post() {
-      this.ventasModel.token = this.token;
-      let contador = 0;
-      this.articulosArray.forEach(x => {
-        x.precio = parseInt(x.precio);
-        x.cantidad = parseInt(x.cantidad);
-        x.descuento = parseInt(x.descuento);
-        contador += x.subtotal;
-      });
-
-      this.ventasModel.impuesto = parseInt(this.ventasModel.impuesto);
-      this.ventasModel.detalles = this.articulosArray;
-      this.ventasModel.total = contador;
-      this.ventasModel.year = new Date(this.ventasModel.fecha).getFullYear() || new Date().getFullYear()
-      this.cleanErrors();
-      await this.postVentas(this.ventasModel);
-      await this.getVentas(this.token);
-      this.prompt = false;
-
-      if (this.$store.state.ingresos.error) {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "error",
-          color: "danger",
-          title: "Algo ha salido mal!",
-          text: "Por favor inténtelo de nuevo más tarde"
-        });
+      if (!await this.$validator.validate()) {
+        return;
       } else {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "check_box",
-          color: "success",
-          title: "Ingreso Agregado!"
+        this.ventasModel.token = this.token;
+        let contador = 0;
+        this.articulosArray.forEach(x => {
+          x.precio = parseInt(x.precio);
+          x.cantidad = parseInt(x.cantidad);
+          x.descuento = parseInt(x.descuento);
+          contador += x.subtotal;
         });
+
+        this.ventasModel.impuesto = parseInt(this.ventasModel.impuesto);
+        this.ventasModel.detalles = this.articulosArray;
+        this.ventasModel.total = contador;
+        this.ventasModel.year = new Date(this.ventasModel.fecha).getFullYear() || new Date().getFullYear()
+        this.cleanErrors();
+        await this.postVentas(this.ventasModel);
+        await this.getVentas(this.token);
+        this.prompt = false;
+
+        if (this.$store.state.ingresos.error) {
+          this.$vs.notify({
+            time: 4000,
+            position: "top-center",
+            icon: "error",
+            color: "danger",
+            title: "Algo ha salido mal!",
+            text: "Por favor inténtelo de nuevo más tarde"
+          });
+        } else {
+          this.$vs.notify({
+            time: 4000,
+            position: "top-center",
+            icon: "check_box",
+            color: "success",
+            title: "Ingreso Agregado!"
+          });
+        }
       }
     },
     eliminar(el) {
@@ -658,8 +706,10 @@ export default {
         });
       }
     },
-    nuevo(bool) {
+    async nuevo(bool) {
       this.prompt = true;
+      this.$validator.reset();
+      this.errors.clear();
       this.index = 1;
       this.ventasModel = {};
       this.articulosArray = [];
@@ -685,5 +735,28 @@ export default {
 
 .btn {
   margin-left: 38%;
+}
+
+#fecha {
+  margin-left: 220%;
+  margin-top: -16% ;
+}
+
+#numeroComprobante {
+  margin-left: 220%;
+  margin-top: -19% ;
+}
+
+.numeroComp {
+  margin-left: 56%;
+}
+
+#impuesto {
+  margin-left: 220%;
+  margin-top: -16%;
+}
+
+#font {
+  font-size: 15px;
 }
 </style>

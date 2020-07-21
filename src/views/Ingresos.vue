@@ -7,288 +7,324 @@
       title="Ingresos"
       @btn="nuevo"
       @eliminar="eliminar"
-      search="true"
+      :search="true"
     >
     </data-table>
     <vs-popup class="holamundo" title="Ingresos" :active.sync="prompt">
       <vs-row vs-w="12">
-        <vs-col
-          vs-type="flex"
-          vs-offset="0.5"
-          vs-w="5"
-          vs-lg="6"
-          vs-sm="6"
-          vs-xs="5"
-        >
-          <vs-select
-            placeholder="Select"
-            class="selectExample"
-            label="Tipo Comprobante"
-            v-model="ingresosModel.tipo_comprobante"
+          <vs-col
+            vs-type="flex"
+            vs-offset="0.5"
+            vs-w="5"
+            vs-lg="6"
+            vs-sm="6"
+            vs-xs="5"
           >
-            <vs-select-item
-              :key="index"
-              :value="item"
-              :text="item"
-              v-for="(item, index) in tipo_documentos"
-            />
-          </vs-select>
-        </vs-col>
+            <vs-select
+              placeholder="Select"
+              class="selectExample"
+              label="Tipo Comprobante"
+              v-model="ingresosModel.tipo_comprobante"
+              v-validate="'required'"
+              name="Comprabante"
+            >
+              <vs-select-item
+                :key="index"
+                :value="item"
+                :text="item"
+                v-for="(item, index) in tipo_documentos"
+              />
+            </vs-select>
+          </vs-col>
+          <div class="container-fluid">
+            <span style="color: red" id="font">{{ errors.first('Comprabante') }}</span>
+          </div>
 
-        <vs-col
-          vs-type="flex"
-          vs-justify="center"
-          vs-offset="-0.5"
-          vs-w="5"
-          vs-lg="5"
-          vs-sm="6"
-          vs-xs="5"
-        >
-
-          <md-field class="has-green">
-            <md-icon>date_range</md-icon>
-            <label>Fecha</label>
-            <md-input v-model="ingresosModel.fecha"></md-input>
-          </md-field>
-
-        </vs-col>
-
-        <vs-col
-          vs-type="flex"
-          vs-justify="center"
-          vs-offset="0.5"
-          vs-w="5"
-          vs-lg="5"
-          vs-sm="6"
-          vs-xs="5"
-        >
-          <md-field class="has-green">
-            <md-icon>phone</md-icon>
-            <label>Série Comprobante</label>
-            <md-input v-model="ingresosModel.serie_comprobante"></md-input>
-          </md-field>
-        </vs-col>
-
-        <vs-col
-          vs-type="flex"
-          vs-justify="center"
-          vs-offset="0.5"
-          vs-w="5"
-          vs-lg="5"
-          vs-sm="6"
-          vs-xs="5"
-        >
-          <md-field class="has-green">
-            <md-icon>place</md-icon>
-            <label>Número Comprobante</label>
-            <md-input v-model="ingresosModel.num_comprobante"></md-input>
-          </md-field>
-        </vs-col>
-
-        <vs-col
-          vs-type="flex"
-          vs-offset="0.5"
-          vs-w="6"
-          vs-lg="5"
-          vs-sm="5"
-          vs-xs="5"
-        >
-          <vs-select
-            placeholder="Select"
-            class="selectExample"
-            label="Proveedor"
-            v-model="ingresosModel.proveedor"
+          <vs-col
+            vs-type="flex"
+            vs-justify="center"
+            vs-offset="0.5"
+            vs-w="5"
+            vs-lg="5"
+            vs-sm="6"
+            vs-xs="5"
           >
-            <vs-select-item
-              :key="index"
-              :value="item._id"
-              :text="item.name"
-              v-for="(item, index) in proveedor"
-            />
-          </vs-select>
-        </vs-col>
 
-        <vs-col
-          vs-type="flex"
-          vs-justify="center"
-          vs-offset="0.5"
-          vs-w="5"
-          vs-lg="5"
-          vs-sm="5"
-          vs-xs="5"
-        >
-          <md-field class="has-green">
-            <label>Impuesto</label>
-            <md-input v-model="ingresosModel.impuesto">1</md-input>
-          </md-field>
-        </vs-col>
+            <md-field class="has-green" id="fecha">
+              <md-icon>date_range</md-icon>
+              <label>Fecha (yyyy-mm-dd)</label>
+              <md-input v-model="ingresosModel.fecha"></md-input>
+            </md-field>
+          </vs-col>
+          <div class="container-fluid">
+            <span style="color: red" id="">{{ errors.first('date') }}</span>
+          </div>
 
-        <vs-col
-          vs-type="flex"
-          vs-offset="0.5"
-          vs-w="5"
-          vs-lg="12"
-          vs-sm="6"
-          vs-xs="5"
-        >
-          <vs-select
-            placeholder="Select"
-            class="selectExample"
-            label="Agregar Artículo"
-            @change="articulosModel"
-            v-model="articuloVal"
+          <vs-col
+            vs-type="flex"
+            vs-justify="center"
+            vs-offset="0.5"
+            vs-w="5"
+            vs-lg="4"
+            vs-sm="6"
+            vs-xs="5"
           >
-            <vs-select-item
-              :key="index"
-              :value="item._id"
-              :text="item.nombre"
-              v-for="(item, index) in articulos"
-            />
-          </vs-select>
-        </vs-col>
+            <md-field class="has-green">
+              <md-icon>drag_indicator</md-icon>
+              <label>Série Comprobante</label>
+              <md-input
+                v-model="ingresosModel.serie_comprobante"
+                v-validate="'required'"
+                name="Serie"
+                type="number"
+              >
+              </md-input>
+            </md-field>
+          </vs-col>
+          <div class="container-fluid">
+            <span style="color: red" id="font">{{ errors.first('Serie') }}</span>
+          </div>
 
-      </vs-row>
-      <div>
-        <vs-table
-            stripe
-            :data="articulosArray"
-            v-if="articulosArray.length > 0"
-        >
-          <template slot="thead">
-            <vs-th>
-              Borrar
-            </vs-th>
+          <vs-col
+            vs-type="flex"
+            vs-justify="center"
+            vs-offset="0.5"
+            vs-w="5"
+            vs-lg="5"
+            vs-sm="6"
+            vs-xs="5"
+          >
+            <md-field class="has-green" id="numeroComprobante">
+              <md-icon>drag_indicator</md-icon>
+              <label>Número Comprobante</label>
+              <md-input
+                v-model="ingresosModel.num_comprobante"
+                v-validate="'required'"
+                name="Número"
+                type="number"
+              >
+              </md-input>
+            </md-field>
+          </vs-col>
+          <div class="container-fluid" id="numeroc">
+            <span style="color: red" id="font" class="numeroComp">{{ errors.first('Número') }}</span>
+          </div>
 
-            <vs-th>
-              Artículo
-            </vs-th>
-            <vs-th>
-              Cantidad
-            </vs-th>
-            <vs-th>
-              Precio
-            </vs-th>
-            <vs-th>
-              Subtotal
-            </vs-th>
-          </template>
-
-          <template slot-scope="{ data }">
-            <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
-                <vs-button
-                  type="flat"
-                  @click="deleteArticulo(tr)"
-                  size="small"
-                  icon="delete"
-                ></vs-button>
-              </vs-td>
-
-              <vs-td :data="tr.nombre">
-                {{ tr.nombre }}
-              </vs-td>
-
-              <vs-td :data="tr.cantidad">
-                {{tr.cantidad}}
-
-                <template slot="edit" >
-                <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.cantidad"/>
-                <vs-button
-                  type="flat"
-                  @click="handle(data, tr)"
-                  size="small"
-                  icon="update"
-                ></vs-button>
-                </template>
-            </vs-td>
-
-            <vs-td :data="tr.precio">
-                {{tr.precio}}
-
-                <template slot="edit" >
-                <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.precio"/>
-                <vs-button
-                  type="flat"
-                  @click="handle(data, tr)"
-                  size="medium"
-                  icon="update"
-                ></vs-button>
-                </template>
-            </vs-td>
-
-            <vs-td :data="tr.subtotal" v-model="tr.subtotal">
-                {{tr.subtotal}}
-
-            </vs-td>
-            </vs-tr>
-          </template>
-        </vs-table>
-        <div v-if="articulosArray.length > 0">
-          <vs-row vs-w="12">
-            <vs-col
-              vs-type="flex"
-              vs-justify="center"
-              vs-offset="6.6"
-              vs-w="5"
-              vs-lg="5"
-              vs-sm="6"
-              vs-xs="5"
+          <vs-col
+            vs-type="flex"
+            vs-offset="0.5"
+            vs-w="6"
+            vs-lg="5"
+            vs-sm="5"
+            vs-xs="5"
+          >
+            <vs-select
+              placeholder="Select"
+              class="selectExample"
+              label="Proveedor"
+              v-model="ingresosModel.proveedor"
+              v-validate="'required'"
+              name="Proveedor"
             >
-              <strong>Total Parcial: {{ totalParcial }}</strong>
-            </vs-col>
-            <vs-col
-              vs-type="flex"
-              vs-justify="center"
-              vs-offset="6.5"
-              vs-w="5"
-              vs-lg="5"
-              vs-sm="6"
-              vs-xs="5"
-            >
-              <strong>Total Impuesto: {{ totalImpuestos }}</strong>
-            </vs-col>
-            <vs-col
-              vs-type="flex"
-              vs-justify="center"
-              vs-offset="6.8"
-              vs-w="5"
-              vs-lg="5"
-              vs-sm="6"
-              vs-xs="5"
-            >
-              <strong>Total Neto: {{ totalNeto }}</strong>
-            </vs-col>
-          </vs-row>
+              <vs-select-item
+                :key="index"
+                :value="item._id"
+                :text="item.name"
+                v-for="(item, index) in proveedor"
+              />
+            </vs-select>
+          </vs-col>
+          <div class="container-fluid">
+            <span style="color: red" id="font">{{ errors.first('Proveedor') }}</span>
         </div>
-        <div class="btn">
-        <vs-button
-          color="primary"
-          type="flat"
-          @click="post"
-          size="large"
-          v-if="index === 1"
-          icon="save"
-          >Add</vs-button
-        >
-        <vs-button
-          color="primary"
-          type="flat"
-          @click="update"
-          size="large"
-          v-else
-          icon="update"
-          >Update</vs-button
-        >
-        <vs-button
-          color="danger"
-          type="flat"
-          size="large"
-          @click="prompt = false"
-          icon="cancel"
-          >Cancel</vs-button
-        >
-      </div>
-      </div>
+
+          <vs-col
+            vs-type="flex"
+            vs-justify="center"
+            vs-offset="0.5"
+            vs-w="5"
+            vs-lg="5"
+            vs-sm="5"
+            vs-xs="5"
+          >
+            <md-field class="has-green" id="impuesto">
+            <md-icon>attach_money</md-icon>
+            <label>Impuesto</label>
+                <md-input v-model="ingresosModel.impuesto" type="number"></md-input>
+            </md-field>
+          </vs-col>
+          <div class="container-fluid">
+            <span style="color: red" id="font">{{ errors.first('Impuesto') }}</span>
+          </div>
+
+          <vs-col
+            vs-type="flex"
+            vs-offset="0.5"
+            vs-w="5"
+            vs-lg="5"
+            vs-sm="6"
+            vs-xs="5"
+          >
+            <vs-select
+              placeholder="Select"
+              class="selectExample"
+              label="Agregar Artículo"
+              @change="articulosModel"
+              v-model="articuloVal"
+            >
+              <vs-select-item
+                :key="index"
+                :value="item._id"
+                :text="item.nombre"
+                v-for="(item, index) in articulos"
+              />
+            </vs-select>
+          </vs-col>
+
+        </vs-row>
+        <div>
+          <vs-table
+              stripe
+              :data="articulosArray"
+              v-if="articulosArray.length > 0"
+          >
+            <template slot="thead">
+              <vs-th>
+                Borrar
+              </vs-th>
+
+              <vs-th>
+                Artículo
+              </vs-th>
+              <vs-th>
+                Cantidad
+              </vs-th>
+              <vs-th>
+                Precio
+              </vs-th>
+              <vs-th>
+                Subtotal
+              </vs-th>
+            </template>
+
+            <template slot-scope="{ data }">
+              <vs-tr :key="indextr" v-for="(tr, indextr) in data">
+                <vs-td>
+                  <vs-button
+                    type="flat"
+                    @click="deleteArticulo(tr)"
+                    size="small"
+                    icon="delete"
+                  ></vs-button>
+                </vs-td>
+
+                <vs-td :data="tr.nombre">
+                  {{ tr.nombre }}
+                </vs-td>
+
+                <vs-td :data="tr.cantidad">
+                  {{tr.cantidad}}
+
+                  <template slot="edit" >
+                  <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.cantidad"/>
+                  <vs-button
+                    type="flat"
+                    @click="handle(data, tr)"
+                    size="small"
+                    icon="update"
+                  ></vs-button>
+                  </template>
+              </vs-td>
+
+              <vs-td :data="tr.precio">
+                  {{tr.precio}}
+
+                  <template slot="edit" >
+                  <vs-input-number v-on:keyup.13="handle(data, tr)" v-model="tr.precio"/>
+                  <vs-button
+                    type="flat"
+                    @click="handle(data, tr)"
+                    size="medium"
+                    icon="update"
+                  ></vs-button>
+                  </template>
+              </vs-td>
+
+              <vs-td :data="tr.subtotal" v-model="tr.subtotal">
+                  {{tr.subtotal}}
+
+              </vs-td>
+              </vs-tr>
+            </template>
+          </vs-table>
+          <div v-if="articulosArray.length > 0">
+            <vs-row vs-w="12">
+              <vs-col
+                vs-type="flex"
+                vs-justify="center"
+                vs-offset="6.6"
+                vs-w="5"
+                vs-lg="5"
+                vs-sm="6"
+                vs-xs="5"
+              >
+                <strong>Total Parcial: {{ totalParcial }}</strong>
+              </vs-col>
+              <vs-col
+                vs-type="flex"
+                vs-justify="center"
+                vs-offset="6.5"
+                vs-w="5"
+                vs-lg="5"
+                vs-sm="6"
+                vs-xs="5"
+              >
+                <strong>Total Impuesto({{ ingresosModel.impuesto }}%): {{ totalImpuestos }}</strong>
+              </vs-col>
+              <vs-col
+                vs-type="flex"
+                vs-justify="center"
+                vs-offset="6.8"
+                vs-w="5"
+                vs-lg="5"
+                vs-sm="6"
+                vs-xs="5"
+              >
+                <strong>Total Neto: {{ totalNeto }}</strong>
+              </vs-col>
+            </vs-row>
+          </div>
+          <div class="btn">
+          <vs-button
+            color="primary"
+            type="flat"
+            @click="post"
+            size="large"
+            v-if="index === 1"
+            icon="save"
+            :disabled="errors.any()"
+            >Add</vs-button
+          >
+          <vs-button
+            color="primary"
+            type="flat"
+            @click="update"
+            size="large"
+            v-else
+            icon="update"
+            :disabled="errors.any()"
+            >Update</vs-button
+          >
+          <vs-button
+            color="danger"
+            type="flat"
+            size="large"
+            @click="prompt = false"
+            icon="cancel"
+            >Cancel</vs-button
+          >
+        </div>
+        </div>
     </vs-popup>
   </div>
 </template>
@@ -318,7 +354,7 @@ export default {
         total: "",
         _id: "",
         fecha: "",
-        proveedor: '',
+        proveedor: "",
         tipo_comprobante: "",
       },
       art: {},
@@ -328,7 +364,8 @@ export default {
       index: null,
       id: '',
       prompt: false,
-      neto: 0
+      neto: 0,
+      disabled: false
     };
   },
   beforeMount() {
@@ -403,8 +440,13 @@ export default {
       return formatter.format(money);
     },
     model(data) {
-      const ingresoId = this.ingresosArray.find(x => x.total === data.total && x.num_comprobante === data.num_comprobante && x.serie_comprobante === data.serie_comprobante);
+      this.$validator.reset();
+      this.errors.clear();
       Object.assign(this.ingresosModel, data);
+      const proveedorId = this.proveedor.find(x => x.name === data.proveedor);
+      this.ingresosModel.proveedor = proveedorId._id;
+
+      const ingresoId = this.ingresosArray.find(x => x.total === data.total && x.num_comprobante === data.num_comprobante && x.serie_comprobante === data.serie_comprobante);
       this.ingresosDetalles.forEach(x => {
         const articulo = this.articulos.find(y => y._id === x.idArticulo);
         x.nombre = articulo.nombre;
@@ -493,48 +535,55 @@ export default {
         }
     },
     async update() {
-      this.ingresosModel.token = this.token;
-      this.ingresosModel._id = this.id
-      const proveedor = this.proveedor.find(x => x._id === this.ingresosModel.proveedor);
-      if (proveedor) {
-        this.ingresosModel.proveedor = proveedor._id;
-      }else {
-        const proveedorName = this.proveedor.find(x => x.name === this.ingresosModel.proveedor);
-          this.ingresosModel.proveedor = proveedorName._id;
-      }
-
-      let contador = 0;
-      this.articulosArray.forEach(x => {
-        contador += x.subtotal;
-      });
-      this.ingresosModel.total = contador;
-      this.articuloVal = '';
-      this.cleanErrors();
-      this.ingresosModel.detalles = this.articulosArray;
-      await this.editIngreso(this.ingresosModel);
-      await this.getIngresos(this.token);
-      this.prompt = false;
-
-      if (this.$store.state.ingresos.error) {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "error",
-          color: "danger",
-          title: "Algo ha salido mal!",
-          text: "Por favor inténtelo de nuevo más tarde"
-        });
+      if (!await this.$validator.validateAll()) {
+        return;
       } else {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "update",
-          color: "primary",
-          title: "Ingreso Actulizado!"
+        this.ingresosModel.token = this.token;
+        this.ingresosModel._id = this.id
+        const proveedor = this.proveedor.find(x => x._id === this.ingresosModel.proveedor);
+        if (proveedor) {
+          this.ingresosModel.proveedor = proveedor._id;
+        }else {
+          const proveedorName = this.proveedor.find(x => x.name === this.ingresosModel.proveedor);
+            this.ingresosModel.proveedor = proveedorName._id;
+        }
+
+        let contador = 0;
+        this.articulosArray.forEach(x => {
+          contador += x.subtotal;
         });
+        this.ingresosModel.total = contador;
+        this.articuloVal = '';
+        this.cleanErrors();
+        this.ingresosModel.detalles = this.articulosArray;
+        await this.editIngreso(this.ingresosModel);
+        await this.getIngresos(this.token);
+        this.prompt = false;
+
+        if (this.$store.state.ingresos.error) {
+          this.$vs.notify({
+            time: 4000,
+            position: "top-center",
+            icon: "error",
+            color: "danger",
+            title: "Algo ha salido mal!",
+            text: "Por favor inténtelo de nuevo más tarde"
+          });
+        } else {
+          this.$vs.notify({
+            time: 4000,
+            position: "top-center",
+            icon: "update",
+            color: "primary",
+            title: "Ingreso Actulizado!"
+          });
+        }
       }
     },
     async post() {
+      if (!await this.$validator.validate()) {
+        return;
+      } else {
       this.ingresosModel.token = this.token;
       let contador = 0;
       this.articulosArray.forEach(x => {
@@ -568,6 +617,7 @@ export default {
           color: "success",
           title: "Ingreso Agregado!"
         });
+      }
       }
     },
     eliminar(el) {
@@ -616,6 +666,8 @@ export default {
     nuevo(bool) {
       this.prompt = true;
       this.index = 1;
+      this.$validator.reset();
+      this.errors.clear();
       this.ingresosModel = {};
       this.articulosArray = [];
       this.articuloVal = '';
@@ -633,12 +685,39 @@ export default {
 };
 </script>
 
-<style lang="css">
+<style lang="css" scoped>
 #prompt {
   margin-left: 10%;
 }
 
 .btn {
   margin-left: 38%;
+}
+
+#fecha {
+  margin-left: 220%;
+  margin-top: -16% ;
+}
+
+#numeroComprobante {
+  margin-left: 220%;
+  margin-top: -19% ;
+}
+
+#numeroc {
+  margin-right: 25px;
+}
+
+.numeroComp {
+  margin-left: 56%;
+}
+
+#impuesto {
+  margin-left: 220%;
+  margin-top: -16%;
+}
+
+#font {
+  font-size: 15px;
 }
 </style>

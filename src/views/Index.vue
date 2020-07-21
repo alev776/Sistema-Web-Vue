@@ -2,14 +2,16 @@
   <div class="wrapper">
     <div class="section text-center">
       <div class="container">
-        <p>Total de Ventas: <strong>{{ totalVentas }}</strong></p>
+        <p>Total de Ventas: <strong>{{ totalVentas || 0 }}</strong></p>
         <p>Año: <strong>{{ yearSelect }}</strong></p>
         <vs-collapse>
           <vs-collapse-item>
             <div slot="header">
+              <md-icon>filter_alt</md-icon>
               Filtros
             </div>
-              <vs-select
+              <div class="container-fluid" id="div">
+                <vs-select
                 class="selectExample"
                 label="Seleccione el año"
                 v-model="yearSelect"
@@ -18,7 +20,9 @@
                 >
                 <vs-select-item :key="index" :value="item" :text="item" v-for="(item,index) in getYears()" />
               </vs-select>
-              <vs-select
+              </div>
+              <div class="container-fluid" id="div2">
+                <vs-select
                 class="selectExample"
                 label="Diseño"
                 v-model="grafico"
@@ -27,9 +31,10 @@
                 >
                 <vs-select-item :key="index" :value="item" :text="item" v-for="(item,index) in graficoArray" />
               </vs-select>
+              </div>
           </vs-collapse-item>
         </vs-collapse>
-        <canvas id="myChart" width="600" height="250"></canvas>
+        <canvas id="myChart" width="700" height="240"></canvas>
       </div>
     </div>
   </div>
@@ -212,12 +217,12 @@ export default {
 </script>
 
 <style lang="css">
-  #select2 {
-    margin-left: 45%;
-    margin-top: -6%;
-    width: 90px;
-  }
-  #select1 {
-    margin-left: 20%;
-  }
+ #div {
+   margin-left: 31%;
+ }
+
+ #div2 {
+   margin-left: 51%;
+   margin-top: -5.2%;
+ }
 </style>

@@ -133,14 +133,16 @@
                                 vs-sm="12"
                                 vs-xs="12"
                               >
+                                  <div :class="{ 'form-group--error': $v.password1.$error }">
                                 <md-field class="md-form-group" id="input">
                                   <md-icon>lock_outline</md-icon>
                                   <label>New Password</label>
-                                  <md-input
-                                    v-model="password1"
+                                    <md-input
+                                    v-model.trim="$v.password1.$model"
                                     type="password"
                                   ></md-input>
                                 </md-field>
+                                  </div>
                               </vs-col>
 
                               <vs-col
@@ -152,14 +154,18 @@
                                 vs-sm="12"
                                 vs-xs="12"
                               >
-                                <md-field class="md-form-group" id="input">
+                                <div :class="{ 'form-group--error': $v.password2.$error }">
+                                  <md-field class="md-form-group" id="input">
                                   <md-icon>lock_outline</md-icon>
                                   <label>Confirm Password</label>
                                   <md-input
-                                    v-model="password2"
+                                    v-model.trim="$v.password2.$model"
                                     type="password"
                                   ></md-input>
                                 </md-field>
+                                </div>
+                                 <div class="error" v-if="!$v.password2.sameAsPassword">Passwords must be identical.</div>
+                                <tree-view :data="$v" :options="{rootObjectKey: '$v', maxDepth: 2}"></tree-view>
                               </vs-col>
                             </vs-row>
                           </md-tab>
@@ -191,6 +197,8 @@
 import { NavTabsCard } from "@/components";
 import { mapActions } from "vuex";
 import router from "../router";
+import { required, sameAs, minLength } from 'vuelidate/lib/validators'
+
 
 export default {
   data() {
@@ -206,6 +214,15 @@ export default {
       password1: "",
       password2: ""
     };
+  },
+  validations: {
+    password1: {
+      required,
+      minLength: minLength(6)
+    },
+    password2: {
+      sameAsPassword: sameAs('password1')
+    }
   },
   mounted() {
     this.userProfile();

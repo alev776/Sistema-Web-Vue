@@ -7,10 +7,15 @@
       title="Clientes"
       @btn="nuevo"
       @eliminar="eliminar"
-      search="true"
+      :search="true"
     >
     </data-table>
-    <vs-popup class="holamundo" title="Proveedor" :active.sync="prompt">
+    <modal v-if="prompt" id="modal">
+      <template slot="header">
+        <h3 v-if="index === 1">Nuevo Cliente</h3>
+        <h3 v-else>Actualizar Cliente</h3>
+      </template>
+      <template slot="body">
       <vs-row vs-w="12">
         <vs-col
           vs-type="flex"
@@ -24,9 +29,17 @@
           <md-field class="has-green">
             <md-icon>person</md-icon>
             <label>Nombre</label>
-            <md-input v-model="clienteModel.name"></md-input>
+            <md-input
+              v-model="clienteModel.name"
+              v-validate="'required'"
+              name="Nombre"
+            >
+            </md-input>
           </md-field>
         </vs-col>
+        <div class="container-fluid">
+            <span style="color: red" id="font">{{ errors.first('Nombre') }}</span>
+        </div>
 
         <vs-col
           vs-type="flex"
@@ -37,12 +50,23 @@
           vs-sm="5"
           vs-xs="5"
         >
-          <md-field class="has-green">
+          <md-field class="has-green" id="telefono">
             <md-icon>phone</md-icon>
             <label>Teléfono</label>
-            <md-input v-model="clienteModel.telefono"></md-input>
+            <md-input
+              v-model="clienteModel.telefono"
+              v-validate="'required|min:10|max:11'"
+              data-vv-delay="2000"
+              name="Teléfono"
+              type="number"
+            >
+            </md-input>
           </md-field>
         </vs-col>
+        <div class="container-fluid" id="telefonoid">
+            <span style="color: red" id="font">{{ errors.first('Teléfono') }}</span>
+        </div>
+
         <vs-col
           vs-type="flex"
           vs-justify="center"
@@ -55,9 +79,17 @@
           <md-field class="has-green">
             <md-icon>place</md-icon>
             <label>Dirección</label>
-            <md-input v-model="clienteModel.direccion"></md-input>
+            <md-input
+              v-model="clienteModel.direccion"
+              v-validate="'required|max:100'"
+              name="Dirección"
+            >
+            </md-input>
           </md-field>
         </vs-col>
+        <div class="container-fluid">
+            <span style="color: red" id="font">{{ errors.first('Dirección') }}</span>
+        </div>
 
         <vs-col
           vs-type="flex"
@@ -72,6 +104,8 @@
             class="selectExample"
             label="Tipo Documento"
             v-model="clienteModel.tipo_documento"
+            v-validate="'required'"
+            name="Documento"
           >
             <vs-select-item
               :key="index"
@@ -81,6 +115,9 @@
             />
           </vs-select>
         </vs-col>
+        <div class="container-fluid">
+            <span style="color: red" id="font">{{ errors.first('Documento') }}</span>
+        </div>
 
         <vs-col
           vs-type="flex"
@@ -91,12 +128,22 @@
           vs-sm="5"
           vs-xs="5"
         >
-          <md-field class="has-green">
+          <md-field class="has-green" id="num">
             <md-icon>push_pin</md-icon>
             <label>Número Documento</label>
-            <md-input v-model="clienteModel.numero_documento"></md-input>
+            <md-input
+              v-model="clienteModel.numero_documento"
+              v-validate="'required|cedula'"
+              data-vv-delay="2000"
+              name="Número Documento"
+              type="number"
+            >
+            </md-input>
           </md-field>
         </vs-col>
+        <div class="container-fluid" id="numid">
+            <span style="color: red" id="font">{{ errors.first('Número Documento') }}</span>
+        </div>
 
         <vs-col
           vs-type="flex"
@@ -110,9 +157,19 @@
           <md-field class="has-green">
             <md-icon>alternate_email</md-icon>
             <label>Email</label>
-            <md-input v-model="clienteModel.email"></md-input>
+            <md-input
+              v-model="clienteModel.email"
+              v-validate="'required|email'"
+              data-vv-delay="2000"
+              name="Email"
+            >
+            </md-input>
           </md-field>
         </vs-col>
+        <div class="container-fluid">
+            <span style="color: red" id="font">{{ errors.first('Email') }}</span>
+        </div>
+
       </vs-row>
       <div class="btn">
         <vs-button
@@ -122,6 +179,7 @@
           size="large"
           v-if="index === 1"
           icon="save"
+          :disabled="errors.any()"
           >Add</vs-button
         >
         <vs-button
@@ -131,6 +189,7 @@
           size="large"
           v-else
           icon="update"
+          :disabled="errors.any()"
           >Update</vs-button
         >
         <vs-button
@@ -142,13 +201,15 @@
           >Cancel</vs-button
         >
       </div>
-    </vs-popup>
+    </template>
+    </modal>
   </div>
 </template>
 
 <script>
 import DataTable from "../components/Data-Table";
 import { mapActions } from "vuex";
+import {Modal} from '@/components'
 
 export default {
   name: "articulos",
@@ -172,7 +233,7 @@ export default {
         email: "",
         _id: ""
       },
-      tipo_documentos: ["Cédula", "Pasaporte", "RNC"],
+      tipo_documentos: ["Cédula"],
       art: {},
       index: null,
       prompt: false
@@ -228,57 +289,65 @@ export default {
       return arreglo;
     },
     async update() {
-      this.clienteModel.token = this.token;
-      this.cleanErrors();
-
-      await this.editCliente(this.clienteModel);
-      await this.getClientes(this.token);
-      this.prompt = false;
-
-      if (this.$store.state.clientes.error) {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "error",
-          color: "danger",
-          title: "Algo ha salido mal!",
-          text: "Por favor inténtelo de nuevo más tarde"
-        });
+      if (!await this.$validator.validateAll()) {
+        return;
       } else {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "update",
-          color: "primary",
-          title: "Cliente Actulizado!"
-        });
+        this.clienteModel.token = this.token;
+        this.cleanErrors();
+
+        await this.editCliente(this.clienteModel);
+        await this.getClientes(this.token);
+        this.prompt = false;
+
+        if (this.$store.state.clientes.error) {
+          this.$vs.notify({
+            time: 4000,
+            position: "top-center",
+            icon: "error",
+            color: "danger",
+            title: "Algo ha salido mal!",
+            text: "Por favor inténtelo de nuevo más tarde"
+          });
+        } else {
+          this.$vs.notify({
+            time: 4000,
+            position: "top-center",
+            icon: "update",
+            color: "primary",
+            title: "Cliente Actulizado!"
+          });
+        }
       }
     },
     async post() {
-      this.clienteModel.token = this.token;
-      this.cleanErrors();
-
-      await this.postClientes(this.clienteModel);
-      await this.getClientes(this.token);
-      this.prompt = false;
-
-      if (this.$store.state.clientes.error) {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "error",
-          color: "danger",
-          title: "Algo ha salido mal!",
-          text: "Por favor inténtelo de nuevo más tarde"
-        });
+      if (!await this.$validator.validateAll()) {
+        return;
       } else {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "check_box",
-          color: "success",
-          title: "Cliente Agregado!"
-        });
+        this.clienteModel.token = this.token;
+        this.cleanErrors();
+
+        await this.postClientes(this.clienteModel);
+        await this.getClientes(this.token);
+        this.prompt = false;
+
+        if (this.$store.state.clientes.error) {
+          this.$vs.notify({
+            time: 4000,
+            position: "top-center",
+            icon: "error",
+            color: "danger",
+            title: "Algo ha salido mal!",
+            text: "Por favor inténtelo de nuevo más tarde"
+          });
+        } else {
+          this.$vs.notify({
+            time: 4000,
+            position: "top-center",
+            icon: "check_box",
+            color: "success",
+            title: "Cliente Agregado!"
+          });
+        }
       }
     },
     eliminar(el) {
@@ -335,7 +404,8 @@ export default {
     }
   },
   components: {
-    DataTable
+    DataTable,
+    Modal
   }
 };
 </script>
@@ -343,6 +413,23 @@ export default {
 <style lang="css">
 #prompt {
   margin-left: 10%;
+}
+#telefono {
+ margin-left: 250%;
+  margin-top: -25% ;
+}
+
+#telefonoid {
+  margin-left: 50%;
+}
+
+#num {
+  margin-left: 250%;
+  margin-top: -20%;
+}
+
+#numid {
+  margin-left: 54%;
 }
 
 .btn {

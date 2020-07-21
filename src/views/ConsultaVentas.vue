@@ -63,6 +63,7 @@
           vs-xs="5"
         >
           <md-field class="has-green">
+            <md-icon>drag_indicator</md-icon>
             <md-icon>phone</md-icon>
             <label>Série Comprobante</label>
             <md-input v-model="ventasModel.serie_comprobante" disabled></md-input>
@@ -79,6 +80,7 @@
           vs-xs="5"
         >
           <md-field class="has-green">
+            <md-icon>drag_indicator</md-icon>
             <md-icon>place</md-icon>
             <label>Número Comprobante</label>
             <md-input v-model="ventasModel.num_comprobante" disabled></md-input>
@@ -119,6 +121,7 @@
           vs-xs="5"
         >
           <md-field class="has-green">
+            <md-icon>attach_money</md-icon>
             <label>Impuesto</label>
             <md-input v-model="ventasModel.impuesto" disabled>1</md-input>
           </md-field>
@@ -158,6 +161,7 @@
           vs-xs="5"
         >
           <md-field class="has-green">
+            <md-icon>money_off</md-icon>
             <label>Descuento</label>
             <md-input v-model="ventasModel.descuento" disabled></md-input>
           </md-field>

@@ -8,74 +8,142 @@
       :button="button"
       @btn="nuevo"
       @eliminar="eliminar"
-      search="true"
+      :search="true"
     >
     </data-table>
-    <vs-prompt
-      @cancel="val = ''"
-      @accept="post"
-      @close="prompt = false"
-      :active.sync="prompt"
-      title="Add"
-    >
-      <div class="con-exemple-prompt">
-        <md-field class="has-green">
-          <md-icon>email</md-icon>
-          <label>Categoría</label>
-          <md-input v-model="nuevaCategoria.nombre"></md-input>
-        </md-field>
-        <md-field class="has-green">
-          <md-icon>email</md-icon>
-          <label>Descripción</label>
-          <md-input v-model="nuevaCategoria.descripcion"></md-input>
-        </md-field>
+    <modal v-if="prompt" id="modal">
+      <template slot="header">
+        <h3>Nueva Categoría</h3>
+      </template>
+      <template slot="body">
+        <div class="con-exemple-prompt">
+            <md-field class="has-green">
+            <md-icon>category</md-icon>
+            <label>Categoría</label>
+            <md-input
+              type="text"
+              v-model="nuevaCategoria.nombre"
+              v-validate="'required'"
+              name="Categoría"
+            >
+            </md-input>
+          </md-field>
+          <span style="color: red">{{ errors.first('Categoría') }}</span>
+
+          <md-field class="has-green">
+            <md-icon>description</md-icon>
+            <label>Descripción</label>
+            <md-input
+              v-model="nuevaCategoria.descripcion"
+              v-validate="'max:80'"
+              name="Descripción"
+            >
+            </md-input>
+          </md-field>
+          <span style="color: red">{{ errors.first('Descripción') }}</span>
+        </div>
+        <div class="btn">
+        <vs-button
+          color="primary"
+          type="flat"
+          @click="post"
+          size="large"
+          icon="save"
+          :disabled="errors.any()"
+          >Add</vs-button
+        >
+        <vs-button
+          color="danger"
+          type="flat"
+          size="large"
+          @click="prompt = false"
+          icon="cancel"
+          >Cancel</vs-button
+        >
       </div>
-    </vs-prompt>
-    <vs-prompt
-      @cancel="val = ''"
-      @accept="edit"
-      @close="prompt = false"
-      :active.sync="prompt2"
-      color="danger"
-      title="Edit"
-    >
-      <div class="con-exemple-prompt">
-        <md-field class="has-green">
-          <md-icon>email</md-icon>
-          <label>Categoría</label>
-          <md-input v-model="editCategoria.nombre"></md-input>
-        </md-field>
-        <md-field class="has-green">
-          <md-icon>email</md-icon>
-          <label>Descripción</label>
-          <md-input v-model="editCategoria.descripcion"></md-input>
-        </md-field>
+      </template>
+    </modal>
+
+    <modal v-if="prompt2" id="modal">
+      <template slot="header">
+        <h3>Actualizar Categoría</h3>
+      </template>
+      <template slot="body">
+        <div class="con-exemple-prompt">
+          <md-field class="has-green">
+            <md-icon>category</md-icon>
+            <label>Categoría</label>
+            <md-input
+              v-model="editCategoria.nombre"
+              v-validate="'required'"
+              name="Categoría"
+            >
+            </md-input>
+          </md-field>
+          <span style="color: red">{{ errors.first('Categoría') }}</span>
+          <md-field class="has-green">
+            <md-icon>description</md-icon>
+            <label>Descripción</label>
+            <md-input
+              v-model="editCategoria.descripcion"
+              v-validate="'max:80'"
+              name="Descripción"
+            >
+            </md-input>
+          </md-field>
+          <span style="color: red">{{ errors.first('Descripción') }}</span>
+        </div>
+
+      </template>
+      <template slot="footer">
+        <div class="btn" id="btn">
+        <vs-button
+          color="primary"
+          type="flat"
+          @click="edit"
+          size="large"
+          icon="update"
+          :disabled="errors.any()"
+          >Update</vs-button
+        >
+        <vs-button
+          color="danger"
+          type="flat"
+          size="large"
+          @click="prompt2 = false"
+          icon="cancel"
+          >Cancel</vs-button
+        >
       </div>
-    </vs-prompt>
+      </template>
+    </modal>
   </div>
 </template>
 
 <script>
 import DataTable from "../components/Data-Table";
 import { mapActions } from "vuex";
+import { Validator } from 'vee-validate';
+import {Modal} from '@/components'
 
 export default {
   name: "categorias",
   data() {
     return {
+      nuevaCategoria: {
+        nombre: "",
+        descripcion: ""
+      },
+      editCategoria: {
+        nombre: "",
+        descripcion: ""
+      },
       header: [
         { text: "Categoría", value: "nombre" },
         { text: "Descripción", value: "descripcion" },
         { text: "Estado", value: "estado" }
       ],
-      editCategoria: {
-        nombre: "",
-        descripcion: ""
-      },
-      nuevaCategoria: {
-        nombre: "",
-        descripcion: ""
-      },
+      prueba: '',
       cat: {},
       id: {},
       button: true,
@@ -107,6 +175,14 @@ export default {
       deleteCategorias: "categorias/deleteCategorias",
       getArticulos: "articulos/getArticulos"
     }),
+    setName(value) {
+      this.prueba = value
+      this.$v.prueba.$touch()
+    },
+    setNombre(value) {
+      this.nuevaCategoria.nombre = value
+      this.$v.nuevaCategoria.nombre.$touch()
+    },
     model(data) {
       Object.assign(this.editCategoria, data);
       this.prompt2 = true;
@@ -122,7 +198,7 @@ export default {
     newArray() {
       const allowedHeaders = ["nombre", "descripcion", "estado"];
       const arreglo = [];
-      if (this.categorias.length) {
+      if (this.categorias) {
         this.categorias.forEach(x => {
         let prueba = {};
         allowedHeaders.forEach(y => {
@@ -134,57 +210,70 @@ export default {
       return arreglo;
     },
     async edit() {
-      const body = {
-        _id: this.id._id,
-        nombre: this.editCategoria.nombre,
-        descripcion: this.editCategoria.descripcion,
-        token: this.token
-      };
-      await this.editCategorias(body);
-      await this.getCategorias(this.token);
-
-      if (this.$store.state.categorias.error) {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "error",
-          color: "danger",
-          title: "Algo ha salido mal!",
-          text: "Por favor inténtelo de nuevo más tarde"
-        });
+      if (!await this.$validator.validateAll()) {
+        return;
       } else {
-        this.$vs.notify({
-          time: 3000,
-          position: "top-center",
-          color: "primary",
-          icon: "update",
-          title: "Categoría Actualizada"
-        });
+        const body = {
+          _id: this.id._id,
+          nombre: this.editCategoria.nombre,
+          descripcion: this.editCategoria.descripcion,
+          token: this.token
+        };
+        this.cleanErrors();
+        await this.editCategorias(body);
+        await this.getCategorias(this.token);
+        this.prompt2 = false
+
+        if (this.$store.state.categorias.error) {
+          this.$vs.notify({
+            time: 4000,
+            position: "top-center",
+            icon: "error",
+            color: "danger",
+            title: "Algo ha salido mal!",
+            text: "Por favor inténtelo de nuevo más tarde"
+          });
+        } else {
+          this.$vs.notify({
+            time: 3000,
+            position: "top-center",
+            color: "primary",
+            icon: "update",
+            title: "Categoría Actualizada"
+          });
+        }
       }
     },
     async post() {
-      this.nuevaCategoria.token = this.token;
-      await this.postCategoria(this.nuevaCategoria);
-      await this.getCategorias(this.token);
-
-      if (this.$store.state.categorias.error) {
-        this.$vs.notify({
-          time: 4000,
-          position: "top-center",
-          icon: "error",
-          color: "danger",
-          title: "Algo ha salido mal!",
-          text: "Por favor inténtelo de nuevo más tarde"
-        });
+      if (!await this.$validator.validate()) {
+        return;
       } else {
-        this.$vs.notify({
-          time: 3000,
-          position: "top-center",
-          color: "success",
-          icon: "check_box",
-          title: "Categoría Agregada"
-        });
+          this.nuevaCategoria.token = this.token;
+          this.cleanErrors();
+          await this.postCategoria(this.nuevaCategoria);
+          await this.getCategorias(this.token);
+          this.prompt = false;
+
+          if (this.$store.state.categorias.error) {
+            this.$vs.notify({
+              time: 4000,
+              position: "top-center",
+              icon: "error",
+              color: "danger",
+              title: "Algo ha salido mal!",
+              text: "Por favor inténtelo de nuevo más tarde"
+            });
+          } else {
+            this.$vs.notify({
+              time: 3000,
+              position: "top-center",
+              color: "success",
+              icon: "check_box",
+              title: "Categoría Agregada"
+            });
+          }
       }
+
     },
     async articuloExist(id) {
       await this.getArticulos(this.token);
@@ -263,7 +352,14 @@ export default {
     }
   },
   components: {
-    DataTable
+    DataTable,
+    Modal
   }
 };
 </script>
+
+<style lang="css" scoped>
+  #error {
+    color: red;
+  }
+</style>

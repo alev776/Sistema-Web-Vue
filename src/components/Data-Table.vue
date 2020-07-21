@@ -24,13 +24,22 @@
                   <h3>
                     {{ title }}
                   </h3>
-                  <div id="btn" align-end v-if="date === false">
+                  <div id="btn" v-if="date === false">
                     <vs-button
                       color="primary"
                       @click="btn"
                       type="flat"
                       icon="add"
-                      >Add</vs-button
+                      >Add</vs-button>
+                  </div>
+                  <div v-if="date === false">
+                    <vs-button
+                      color="primary"
+                      @click="printTodo"
+                      v-if="printAll === true"
+                      type="flat"
+                      icon="print"
+                      >Download</vs-button
                     >
                   </div>
                   <div class="md-layout" v-if="date">
@@ -141,6 +150,10 @@ export default {
     search: {
       type: Boolean,
       default: false
+    },
+    printAll: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -187,7 +200,10 @@ export default {
     eliminar() {
       this.$emit("eliminar", this.info);
     },
-    print() {}
+    print() {},
+    printTodo() {
+      this.$emit("printAll", true)
+    }
   }
 };
 </script>
@@ -202,7 +218,7 @@ export default {
 
 #btn {
   width: 12%;
-  margin-left: 48%;
+  margin-left: 42%;
 }
 
 .con-expand-users .con-btns-user {
