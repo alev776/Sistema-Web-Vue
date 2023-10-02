@@ -7,6 +7,7 @@
       title="Articulos"
       @btn="nuevo"
       @eliminar="eliminar"
+      :printAll="true"
       @printAll="crearPDF"
       :search="true"
     >
@@ -258,23 +259,25 @@ export default {
     }),
     crearPDF() {
       const doc = new jsPDF()
+      const body = this.articulos
 
-      let print = []
-      const rows = this.articulos.map(x => {
-        print.push(x.codigo, x.nombre, x.categoria, x.stock, x.precio_venta)
-      });
+       const columns = [
+          { header: 'Código', dataKey: 'codigo' },
+          { header: 'Nombre', dataKey: 'nombre' },
+          { header: 'Categoría', dataKey: 'categoria' },
+          { header: 'Stock', dataKey: 'stock' },
+          { header: 'Precio de Venta', dataKey: 'precio_venta' }
+        ]
 
-      doc.autoTable({
-        head: [
-        "codigo",
-        "nombre",
-        "categoria",
-        "stock",
-        "precio_venta"
-        ],
-        body: print
-      })
-      doc.save('table.pdf')
+      let header = function (data) {
+        doc.setFontSize(18);
+        doc.setTextColor(40);
+        doc.setFontStyle('normal');
+        doc.text("Listado de Artículos", data.settings.margin.left, 30);
+    };
+
+    doc.autoTable(columns, body, {margin: {top: 40}, beforePageContent: header});
+      doc.save('Articulos.pdf')
     },
     model(data) {
       Object.assign(this.articulosModel, data);

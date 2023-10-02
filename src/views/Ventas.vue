@@ -8,6 +8,8 @@
       @btn="nuevo"
       @eliminar="eliminar"
       :search="true"
+      :printDoc="true"
+      @itemToPrint="printPDF"
     >
     </data-table>
     <vs-popup class="holamundo" title="Ventas" :active.sync="prompt">
@@ -354,12 +356,105 @@
         </div>
         </div>
     </vs-popup>
+      <modal v-if="promptPDF">
+        <body id="factura">
+          <header>
+              <div id="logo">
+                  <img src="img/logo2.png" id="imagen">
+              </div>
+              <div id="datos">
+                  <p id="encabezado">
+                      <b>IncanatoIT</b><br>José Gálvez 1368, Chongoyape - Chiclayo, Perú<br>Telefono:(+51)931742904<br>Email:jcarlos.ad7@gmail.com
+                  </p>
+              </div>
+              <div id="fact">
+                  <p>Factura<br>
+                  0001-0004<br>
+                  15/12/2018</p>
+              </div>
+          </header>
+          <br>
+          <section>
+              <div>
+                  <table id="facliente">
+                      <tbody>
+                          <tr>
+                              <td id="cliente">
+                                  <strong>Sr(a). Juan Carlos Arcila Díaz</strong><br>
+                                  <strong>Documento:</strong> 47715777<br>
+                                  <strong>Dirección:</strong> Zarumilla 113 - Chiclayo<br>
+                                  <strong>Teléfono:</strong> 931742904<br>
+                                  <strong>Email:</strong> jcarlos.ad7@gmail.com
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </section>
+          <br>
+          <section>
+              <div>
+                  <table id="facarticulo">
+                      <thead>
+                          <tr id="fa">
+                              <th>CANT</th>
+                              <th>DESCRIPCION</th>
+                              <th>PRECIO UNIT</th>
+                              <th>DESC.</th>
+                              <th>PRECIO TOTAL</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td style="text-align:center;">cant</td>
+                              <td>descripcion del producto descripcion del producto descripcion del producto</td>
+                              <td style="text-align:right;">precio uni</td>
+                              <td style="text-align:right;">descuento</td>
+                              <td style="text-align:right;">precio total</td>
+                          </tr>
+                      </tbody>
+                      <tfoot>
+                          <tr>
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                              <th style="text-align:right;">SUBTOTAL</th>
+                              <th style="text-align:right;">subtotal</th>
+                          </tr>
+                          <tr>
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                              <th style="text-align:right;">IVA</th>
+                              <th style="text-align:right;">iva</th>
+                          </tr>
+                          <tr>
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                              <th style="text-align:right;">TOTAL</th>
+                              <th style="text-align:right;">total</th>
+                          </tr>
+                      </tfoot>
+                  </table>
+              </div>
+          </section>
+          <br>
+          <br>
+          <footer>
+              <div id="gracias">
+                  <p><b>Gracias por su compra!</b></p>
+              </div>
+          </footer>
+      </body>
+      </modal>
   </div>
 </template>
 
 <script>
 import DataTable from "../components/Data-Table";
 import { mapActions } from "vuex";
+import {Modal} from '@/components'
 
 export default {
 
@@ -394,6 +489,7 @@ export default {
       index: null,
       id: '',
       prompt: false,
+      promptPDF: false,
       neto: 0
     };
   },
@@ -473,6 +569,9 @@ export default {
       editVenta: "ventas/editVenta",
       deleteVenta: "ventas/deleteVenta"
     }),
+    printPDF(item) {
+      this.promptPDF = true;
+    },
       async ventas() {
         await this.getVentas(this.token);
         await this.getClientes(this.token);
@@ -723,12 +822,13 @@ export default {
     }
   },
   components: {
-    DataTable
+    DataTable,
+    Modal
   }
 };
 </script>
 
-<style lang="css">
+<style>
 #prompt {
   margin-left: 10%;
 }
@@ -759,4 +859,79 @@ export default {
 #font {
   font-size: 15px;
 }
+
+#factura {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            font-size: 16px ;
+        }
+
+        #logo {
+            float: left;
+            margin-left: 2%;
+            margin-right: 2%;
+        }
+        #imagen {
+            width: 100px;
+        }
+
+        #fact {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #datos {
+            float: left;
+            margin-top: 0%;
+            margin-left: 2%;
+            margin-right: 2%;
+            /*text-align: justify;*/
+        }
+
+        #encabezado {
+            text-align: center;
+            margin-left: 10px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        section {
+            clear: left;
+        }
+
+        #cliente {
+            text-align: left;
+        }
+
+        #facliente {
+            width: 40%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            margin-bottom: 15px;
+        }
+
+        #fa {
+            color: #FFFFFF;
+            font-size: 14px;
+        }
+
+        #facarticulo {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        #facarticulo thead {
+            padding: 20px;
+            background: #2183E3;
+            text-align: center;
+            border-bottom: 1px solid #FFFFFF;
+        }
+
+        #gracias {
+            text-align: center;
+        }
 </style>

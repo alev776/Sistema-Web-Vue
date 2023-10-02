@@ -260,7 +260,6 @@ export default {
       deleteProveedor: "proveedores/deleteProveedor"
     }),
     model(data) {
-      console.log(data);
       Object.assign(this.proveedoresModel, data);
       const id = this.proveedor.find(x => x.email === data.email);
       this.proveedoresModel._id = id._id;

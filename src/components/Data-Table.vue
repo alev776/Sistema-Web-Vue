@@ -85,7 +85,7 @@
                             >
                             <vs-button
                               color="dark"
-                              @click="print"
+                              @click="print(info)"
                               v-if="printDoc === true"
                               type="flat"
                               icon="print"
@@ -153,7 +153,7 @@ export default {
     },
     printAll: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   data() {
@@ -200,7 +200,9 @@ export default {
     eliminar() {
       this.$emit("eliminar", this.info);
     },
-    print() {},
+    print(item) {
+      this.$emit('itemToPrint', item)
+    },
     printTodo() {
       this.$emit("printAll", true)
     }

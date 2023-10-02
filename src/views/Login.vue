@@ -20,8 +20,9 @@
                 slot="buttons"
                 href="javascript:void(0)"
                 class="md-just-icon md-simple md-white"
+                @click="github"
               >
-                <i class="fab fa-twitter"></i>
+                <i class="fab fa-github"></i>
               </md-button>
               <md-button
                 slot="buttons"
@@ -64,7 +65,6 @@
               title="Sign Up"
               @cancel="(valMultipe.value1 = ''), (valMultipe.value2 = '')"
               @accept="loginClasic"
-              @close="close"
               :is-valid="validName"
               :active.sync="activePrompt2"
             >
@@ -84,7 +84,7 @@
                 <md-field class="has-green">
                   <md-icon>lock_outline</md-icon>
                   <label>Password</label>
-                  <md-input v-model="input.password"></md-input>
+                  <md-input v-model="input.password" type="password"></md-input>
                 </md-field>
                 <vs-alert
                   :active="!validName"
@@ -202,18 +202,26 @@ export default {
       const provider = new firebase.auth.FacebookAuthProvider();
       this.ingresar(provider);
     },
+    github() {
+      const provider = new firebase.auth.GithubAuthProvider();
+      this.ingresar(provider)
+      console.log(provider)
+    },
     async ingresar(provider) {
       firebase.auth().languageCode = "es";
 
       try {
         const result = await firebase.auth().signInWithPopup(provider);
         const user = result.user;
-
+        console.log(result.additionalUserInfo.profile)
         this.postUser({
-          name: user.displayName,
-          email: user.email,
+          name: result.additionalUserInfo.profile.name,
+          email: result.additionalUserInfo.profile.email,
+          provider: result.additionalUserInfo.profile.providerId,
           password: "123456",
-          avatar: user.photoURL
+          avatar: result.additionalUserInfo.profile.avatar,
+          picture: result.additionalUserInfo.profile.picture,
+
         });
       } catch (error) {}
     },
@@ -224,13 +232,6 @@ export default {
         text: "Lorem ipsum dolor sit amet, consectetur"
       });
     },
-    close() {
-      this.$vs.notify({
-        color: "danger",
-        title: "Closed",
-        text: "You close a dialog!"
-      });
-    }
   }
 };
 </script>

@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from './store'
+import 'core-js'
 require('./plugins');
 
 
@@ -59,8 +60,8 @@ Validator.extend('cedula', validator);
 Vue.use(VeeValidate);
 
 Vue.use(VueAxios, axios);
-axios.defaults.baseURL = 'http://localhost:3000';
-// axios.defaults.baseURL = 'http://localhost:3000';
+// axios.defaults.baseURL = 'https://web-ventas-app.herokuapp.com';
+axios.defaults.baseURL = 'http://localhost:3080';
 
 import MaterialKit from "./plugins/material-kit";
 
